@@ -20,9 +20,8 @@ urls = ['https://www.investing.com/equities/apple-computer-inc',
         'https://www.investing.com/equities/vm-ware-inc',
         'https://www.investing.com/equities/docusign-inc',
         'https://www.investing.com/equities/splunk-inc',
-        'https://www.investing.com/equities/general-electric']
-
-#'https://www.investing.com/etfs/spdr-select-sector---utilities'
+        'https://www.investing.com/equities/general-electric',
+        'https://www.investing.com/etfs/spdr-select-sector---utilities']
 
 # Create/open csv file for storing data
 file = open('stockprices.csv', 'w')
