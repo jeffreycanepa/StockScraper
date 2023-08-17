@@ -3,6 +3,8 @@ https://www.scraperapi.com/blog/how-to-scrape-stock-market-data-with-python/
 This is just meant as a means for me to learn how to use pyhon and at the 
 same time track some stocks of interest (to me).  Original code by Zoltan Bettenbuk.
 '''
+# /opt/homebrew/bin/python3
+
 import requests
 from requests.exceptions import HTTPError, Timeout
 from bs4 import BeautifulSoup
@@ -10,7 +12,10 @@ import csv
 from urllib.parse import urlencode
 import datetime
 
+# My Scraperapi.com API key
 myApiKey = 'd244474ba73a08e90252a036c5c0fc5f'
+
+# My Stocks
 urls = ['https://www.investing.com/equities/apple-computer-inc',
         'https://www.investing.com/equities/adobe-sys-inc',
         'https://www.investing.com/equities/network-appliance-inc',
@@ -52,7 +57,7 @@ for url in urls:
     pctChange = soup.find('div', {'class': 'text-base font-bold leading-6 md:text-xl md:leading-7 rtl:force-ltr'}).text
 
     
-    # Print the data to screen
+    # Print the data to screen.  This is serving as a makeshift status widget
     print('Loading:', url)
     print('\t',company, price, change, pctChange)
 
