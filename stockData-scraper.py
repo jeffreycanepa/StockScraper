@@ -8,6 +8,7 @@ from requests.exceptions import HTTPError, Timeout
 from bs4 import BeautifulSoup
 import csv
 from urllib.parse import urlencode
+import datetime
 
 myApiKey = 'd244474ba73a08e90252a036c5c0fc5f'
 urls = ['https://www.investing.com/equities/apple-computer-inc',
@@ -23,10 +24,14 @@ urls = ['https://www.investing.com/equities/apple-computer-inc',
         'https://www.investing.com/equities/general-electric',
         'https://www.investing.com/etfs/spdr-select-sector---utilities']
 
+# Get current date
+today = datetime.datetime.now().strftime('%Y-%m-%d')
+
 # Create/open csv file for storing data
 file = open('stockprices.csv', 'w')
 writer = csv.writer(file)
-writer.writerow(['Company', 'Price', 'Change', '% Change'])
+writer.writerow(['Date', 'Company', 'Price', 'Change', '% Change'])
+writer.writerow([today, '', '', '', ''])
 
 # Loop through supplied stocks and get data
 for url in urls:
@@ -43,15 +48,16 @@ for url in urls:
     soup = BeautifulSoup(page.text, 'html.parser')
     company = soup.find('h1', {'class': 'text-xl text-left font-bold leading-7 md:text-3xl md:leading-8 mb-2.5 md:mb-2 text-[#232526] rtl:soft-ltr'}).text
     price = soup.find('div', {'class': 'text-5xl font-bold leading-9 md:text-[42px] md:leading-[60px] text-[#232526]'}).text
-    change = soup.find('div', {'class': 'flex gap-2 py-1.5 px-3 md:gap-3 md:px-4 items-center rounded text-negative-main bg-negative-light'}).find_all('div')[0].text
-    pctChange = soup.find('div', {'class': 'flex gap-2 py-1.5 px-3 md:gap-3 md:px-4 items-center rounded text-negative-main bg-negative-light'}).find_all('div')[1].text
+    change = soup.find('div', {'class': 'text-base font-bold leading-6 md:text-xl md:leading-7 rtl:force-ltr'}).text
+    pctChange = soup.find('div', {'class': 'text-base font-bold leading-6 md:text-xl md:leading-7 rtl:force-ltr'}).text
 
+    
     # Print the data to screen
     print('Loading:', url)
     print('\t',company, price, change, pctChange)
 
     # Write the data to a csv file
-    writer.writerow([company, price, 
+    writer.writerow(['', company, price, 
                  change, pctChange])
 
 file.close()
