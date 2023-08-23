@@ -1,9 +1,19 @@
 # /opt/homebrew/bin/python3
+'''
+getStocks: This is my first attempt at a useful Python script.  This
+script uses yFinance to lookup some of the stocks that I own and will
+get the closing price.  It will then save the data to an Excel spreadsheet.
+
+    To Do: 
+    1) Check to see if stocks for today were already fetched/saved
+    2) Switch to GMT/UTC time
+    2) Read in stocks from external file 
+    3) Add UI to add/remove stocks
+'''
 
 import yfinance as yf
 from tkinter import messagebox
 from datetime import datetime
-import csv
 import openpyxl
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill
@@ -29,6 +39,7 @@ def getPercentChange(curPrice, oldPrice):
     pchange = float(((curPrice - oldPrice) / oldPrice) * 100)
     return pchange
 
+# Get the index of the first empty row for each sheet in workbook for the Excel file
 def getLastRow(sheet):
     last_row = sheet.max_row
     last_col = sheet.max_column
@@ -43,10 +54,6 @@ def getLastRow(sheet):
 
 # Using myStocks, get stock data on each stock and write it out to file
 def checkStocks(wb_obj, datestr):
-    '''To Do: 
-    1) Read in stocks from a file. 
-    2) Add UI to add/remove stocks 
-    '''
     for stocks in myStocks:
         ticker = yf.Ticker(stocks).info
         curr_symbol = ticker['symbol']
@@ -117,8 +124,7 @@ def main():
         messagebox.showwarning('Markets still open', 'Markets are still open.\nPlease wait until they are closed')
         # print('Markets are still open.  Please wait until they are closed')
     else:
-        # Get current date
-        # now = datetime.now().strftime('%Y-%m-%d')
+        # Get current date string formatted my way
         datestr = now.strftime('%Y-%m-%d')
 
         # Create/open xsl file for storing data
