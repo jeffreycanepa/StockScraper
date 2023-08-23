@@ -6,14 +6,13 @@ get the closing price.  It will then save the data to an Excel spreadsheet.
 
     To Do: 
     1) Check to see if stocks for today were already fetched/saved
-    2) Switch to GMT/UTC time
     2) Read in stocks from external file 
     3) Add UI to add/remove stocks
 '''
 
 import yfinance as yf
 from tkinter import messagebox
-from datetime import datetime
+from datetime import datetime, timezone
 import openpyxl
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill
@@ -25,6 +24,7 @@ myStocks = ['AAPL', 'ADBE', 'CSCO', 'NTAP', 'MSFT', 'AMZN', 'TSLA', 'VMW', 'DOCU
 
 # Get current datetime
 now = datetime.now()
+utcnow = datetime.now(timezone.utc)
 
 # File to work with
 myFile = 'myStocks.xlsx'
@@ -120,11 +120,10 @@ def formatHeader(wb_obj):
 
 def main():
     # Only check after markets have closed (assumes Pacific Time Zone)
-    if now.hour < 13:
+    if utcnow.hour < 20:
         messagebox.showwarning('Markets still open', 'Markets are still open.\nPlease wait until they are closed')
-        # print('Markets are still open.  Please wait until they are closed')
     else:
-        # Get current date string formatted my way
+        # Get current date string formatted my way in user's timezone
         datestr = now.strftime('%Y-%m-%d')
 
         # Create/open xsl file for storing data
