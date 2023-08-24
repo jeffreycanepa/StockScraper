@@ -51,6 +51,94 @@ def getLastRow(sheet):
                 last_col -= 1 
     return last_row+1
 
+# Using myStocks, create a sheet for each stock symbol
+def createSheets(wb_obj):
+    # Create the sheets
+    for stocks in myStocks:
+        if stocks == 'AAPL':
+            sheet = wb_obj.active
+            sheet.title = stocks
+        else:
+            sheet = wb_obj.create_sheet(title=stocks)
+
+# Create the column titles I want and format them
+def createColumnNames(wb_obj):
+    # Create the column names in each sheet and set their width
+    sheetNames = wb_obj.sheetnames
+    for name in sheetNames:
+        sheet = wb_obj[name]
+        sheet['A1'] = 'Date'
+        sheet.column_dimensions['A'].width = 10
+        sheet['B1'] = 'Ticker'
+        sheet.column_dimensions['B'].width = 10
+        sheet['C1'] = 'Closing Price'
+        sheet.column_dimensions['C'].width = 12
+        sheet['D1'] = 'Previous Close'
+        sheet.column_dimensions['D'].width = 14
+        sheet['E1'] = 'Change'
+        sheet.column_dimensions['E'].width = 12
+        sheet['F1'] = '% Change'
+        sheet.column_dimensions['F'].width = 12
+
+# Format the column headers
+def formatHeader(wb_obj):
+    # Format the top row on each sheet
+    lightGrey = 'CCCCCCCC'
+    sheetNames = wb_obj.sheetnames
+    for name in sheetNames:
+        sheet = wb_obj[name]
+        for columns in sheet.iter_cols(min_col=1, max_col=6):
+            for cell in columns:
+                cell.fill = PatternFill(start_color=lightGrey, end_color=lightGrey,
+                                        fill_type = "solid")
+                cell.font = Font(bold = True)
+                cell.alignment = Alignment(horizontal = 'center')
+
+# Check to see if the NYSE/NASDAQ is open or closed. Script only run if NYSE/NASDAQ is closed
+def isMarketOpen():
+    # Get current UTC date/time
+    utcnow = datetime.now(timezone.utc)
+    if (((utcnow.hour > 13) and (utcnow.minute > 30)) and (utcnow.hour < 20)):
+        # messagebox.showwarning('Warning', 'Markets are still open')
+        return True
+    else:
+        return False
+
+# Check to see if script was already run.  Looks for last date in excel workbook.
+def hasScriptBeenRunToday():
+    workbook = openpyxl.load_workbook(myFile)
+    wp = workbook.active
+    last_row = wp.max_row
+    todayDate = datetime.now().strftime('%Y-%m-%d')
+    prevDate = wp.cell(last_row, 1).value
+    if todayDate == prevDate:
+        # Script has already been run today
+        return True
+    else:
+       return False
+
+def getStockData():
+    # Get current date string formatted my way in user's timezone
+    datestr = now.strftime('%Y-%m-%d')
+
+    # Create/open xlsx file for storing data
+    try:
+        # Open workbook
+        wb_obj = openpyxl.load_workbook(myFile)
+        checkStocks(wb_obj, datestr)
+        
+    except FileNotFoundError as e:
+        wb_obj = Workbook()
+        createSheets(wb_obj)
+        createColumnNames(wb_obj)
+        formatHeader(wb_obj)
+        checkStocks(wb_obj, datestr)
+ 
+    except UnboundLocalError as e:
+        print(e)
+    
+    # Save the file
+    wb_obj.save(myFile)
 
 # Using myStocks, get stock data on each stock and write it out to file
 def checkStocks(wb_obj, datestr):
@@ -75,77 +163,20 @@ def checkStocks(wb_obj, datestr):
         sheet['E' + str(lastRow)] = change
         sheet['F' + str(lastRow)] = pctChange
 
-        # Write out the data
-        # writer.writerow(['', curr_symbol, current_price, previous_close_price, format(change, '.2f') , format(pctChange, '.2f')])
-
-def createSheets(wb_obj):
-    # Create the sheets
-    for stocks in myStocks:
-        if stocks == 'AAPL':
-            sheet = wb_obj.active
-            sheet.title = stocks
-        else:
-            sheet = wb_obj.create_sheet(title=stocks)
-
-def createColumnNames(wb_obj):
-    # Create the column names in each sheet and set their width
-    sheetNames = wb_obj.sheetnames
-    for name in sheetNames:
-        sheet = wb_obj[name]
-        sheet['A1'] = 'Date'
-        sheet.column_dimensions['A'].width = 10
-        sheet['B1'] = 'Ticker'
-        sheet.column_dimensions['B'].width = 10
-        sheet['C1'] = 'Closing Price'
-        sheet.column_dimensions['C'].width = 12
-        sheet['D1'] = 'Previous Close'
-        sheet.column_dimensions['D'].width = 14
-        sheet['E1'] = 'Change'
-        sheet.column_dimensions['E'].width = 12
-        sheet['F1'] = '% Change'
-        sheet.column_dimensions['F'].width = 12
-
-def formatHeader(wb_obj):
-    # Format the top row on each sheet
-    lightGrey = 'CCCCCCCC'
-    sheetNames = wb_obj.sheetnames
-    for name in sheetNames:
-        sheet = wb_obj[name]
-        for columns in sheet.iter_cols(min_col=1, max_col=6):
-            for cell in columns:
-                cell.fill = PatternFill(start_color=lightGrey, end_color=lightGrey,
-                                        fill_type = "solid")
-                cell.font = Font(bold = True)
-                cell.alignment = Alignment(horizontal = 'center')
-
 def main():
-    # Only check after markets have closed (assumes Pacific Time Zone)
-    if utcnow.hour < 20:
-        messagebox.showwarning('Markets still open', 'Markets are still open.\nPlease wait until they are closed')
+    # Check if NYSE/NASDAQ are open
+    # marketOpen = isMarketOpen()
+    marketOpen = True
+    if marketOpen == True:
+        mrktOpenMsg = 'NYSE and NASDAQ are still open.\nPlease wait for markets to close.\n9:30am-4:00pm EDT'
+        messagebox.showwarning('Markets still open', mrktOpenMsg)
     else:
-        # Get current date string formatted my way in user's timezone
-        datestr = now.strftime('%Y-%m-%d')
-
-        # Create/open xsl file for storing data
-        try:
-            # Open workbook
-            wb_obj = openpyxl.load_workbook(myFile)
-            checkStocks(wb_obj, datestr)
-        
-        except FileNotFoundError as e:
-            wb_obj = Workbook()
-            createSheets(wb_obj)
-            createColumnNames(wb_obj)
-            formatHeader(wb_obj)
-            checkStocks(wb_obj, datestr)
-            # wb_obj.save('jeffsStocks.xlsx')
- 
-        except UnboundLocalError as e:
-            print(e)
-    
-        # Save the file
-        wb_obj.save(myFile)
-
+        # messagebox.showinfo('Dialog', 'Market is closed')
+        alreadyRun = hasScriptBeenRunToday()
+        if alreadyRun == False:
+            getStockData()
+        else:
+            messagebox.showerror('Script has already run', 'This script was already run today.\nNo action will be taken.')
 
 if __name__ == "__main__":
     main()
