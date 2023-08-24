@@ -5,9 +5,8 @@ script uses yFinance to lookup some of the stocks that I own and will
 get the closing price.  It will then save the data to an Excel spreadsheet.
 
     To Do: 
-    1) Check to see if stocks for today were already fetched/saved
-    2) Read in stocks from external file 
-    3) Add UI to add/remove stocks
+    1) Read in stocks from external file 
+    2) Add UI to add/remove stocks
 '''
 
 import yfinance as yf
