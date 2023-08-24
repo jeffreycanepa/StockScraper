@@ -97,10 +97,8 @@ def formatHeader(wb_obj):
 def isMarketOpen():
     # Get current UTC date/time
     utcnow = datetime.now(timezone.utc)
-    utcmkt_open = '13:30'
-    utcnow_hm = '{0}:{1}'.format(utcnow.hour, utcnow.minute)
-    if ((utcnow_hm > utcmkt_open) and (utcnow.hour < 20)):
-        # messagebox.showwarning('Warning', 'Markets are still open')
+    utcnow_hour_min = '{0}:{1}'.format(utcnow.hour, utcnow.minute)
+    if ((utcnow_hour_min > '13:30') and (utcnow.hour < 20)):
         return True
     else:
         return False

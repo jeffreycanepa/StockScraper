@@ -35,10 +35,8 @@ def getLastStockEntry():
 def isMarketOpen():
     # Get current date
     utcnow = datetime.now(timezone.utc)
-    utcmkt_open = '13:30'
-    utcnow_hm = '{0}:{1}'.format(utcnow.hour, utcnow.minute)
-    if (((utcnow_hm > utcmkt_open)) and (utcnow.hour < 20)):
-        messagebox.showwarning('Warning', 'Markets are still open')
+    utcnow_hour_min = '{0}:{1}'.format(utcnow.hour, utcnow.minute)
+    if (((utcnow_hour_min > '13:30')) and (utcnow.hour < 20)):
         return False
     else:
         return True
@@ -51,7 +49,6 @@ def getMarketTime():
     localTZ = datetime.now(timezone.utc).astimezone().tzinfo
     local_start = utc_start.astimezone(localTZ)
     local_end = utc_end.astimezone(localTZ)
-    # print('utc_start:', utc_start, '\nlocal_start:', local_start,'\nutc_end:', utc_end, '\nlocal_end:', local_end)
     return [local_start.strftime('%I:%M %p'), local_end.strftime('%I:%M %p'), localTZ]
 
 def main():
