@@ -18,14 +18,8 @@ from openpyxl.styles import PatternFill
 from openpyxl.styles import Font
 from openpyxl.styles import Alignment
 
-# My Stocks
+# Global Variables
 myStocks = ['AAPL', 'ADBE', 'CSCO', 'NTAP', 'MSFT', 'AMZN', 'TSLA', 'VMW', 'DOCU', 'SPLK', 'XLU']
-
-# Get current datetime
-now = datetime.now()
-utcnow = datetime.now(timezone.utc)
-
-# File to work with
 myFile = 'myStocks.xlsx'
 
 # Calculate the difference between today's price and yesterday's price
@@ -129,7 +123,7 @@ def hasScriptBeenRunToday():
 
 def getStockData():
     # Get current date string formatted my way in user's timezone
-    datestr = now.strftime('%Y-%m-%d')
+    datestr = datetime.now().strftime('%Y-%m-%d')
 
     # Create/open xlsx file for storing data
     try:
@@ -167,11 +161,17 @@ def checkStocks(wb_obj, datestr):
         sheet = wb_obj[curr_symbol]
         lastRow = getLastRow(sheet)
         sheet['A' + str(lastRow)] = datestr
+        cell = sheet['A' + str(lastRow)]
+        cell.number_format = 'yyyy-mm-dd'
         sheet['B' + str(lastRow)] = curr_symbol
         sheet['C' + str(lastRow)] = current_price
         sheet['D' + str(lastRow)] = previous_close_price
         sheet['E' + str(lastRow)] = change
+        cell = sheet['E' + str(lastRow)]
+        cell.number_format = '0.00'
         sheet['F' + str(lastRow)] = pctChange
+        cell = sheet['F'+ str(lastRow)]
+        cell.number_format = '0.00'
 
 def main():
     # Check if NYSE/NASDAQ are open
