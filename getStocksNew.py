@@ -104,6 +104,17 @@ def isMarketOpen():
     else:
         return False
 
+# Get the hours the NYSE and NASDAQ are open and return 
+# a list with time_open, time_close and timezone strings for local timezone
+def getMarketOpenHours():
+    utc_time = datetime.now(timezone.utc)
+    utc_start = utc_time.replace(hour=13, minute=30, second=0, microsecond=0)
+    utc_end = utc_time.replace(hour=20, minute=0, second=0, microsecond=0)
+    localTZ = datetime.now(timezone.utc).astimezone().tzinfo
+    local_start = utc_start.astimezone(localTZ)
+    local_end = utc_end.astimezone(localTZ)
+    return [local_start.strftime('%I:%M %p'), local_end.strftime('%I:%M %p'), localTZ]
+
 # Check to see if script was already run.  Looks for last date in excel workbook.
 def hasScriptBeenRunToday():
     workbook = openpyxl.load_workbook(myFile)
@@ -165,10 +176,10 @@ def checkStocks(wb_obj, datestr):
 
 def main():
     # Check if NYSE/NASDAQ are open
-    # marketOpen = isMarketOpen()
-    marketOpen = True
+    marketOpen = isMarketOpen()
     if marketOpen == True:
-        mrktOpenMsg = 'NYSE and NASDAQ are still open.\nPlease wait for markets to close.\n9:30am-4:00pm EDT'
+        mktHours = getMarketOpenHours()
+        mrktOpenMsg = ('NYSE and NASDAQ are still open.\nPlease wait for markets to close.\nMarket hours are:\nMon - Fri\n{0} - {1} {2}').format(mktHours[0],mktHours[1],mktHours[2])
         messagebox.showwarning('Markets still open', mrktOpenMsg)
     else:
         # messagebox.showinfo('Dialog', 'Market is closed')

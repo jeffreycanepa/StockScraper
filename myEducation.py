@@ -34,23 +34,37 @@ def getLastStockEntry():
 
 def isMarketOpen():
     # Get current date
-    now = datetime.now()
-    utcnow = datetime.now(timezone.utc)
-    print(utcnow.time())
-    # print(utcnow.weekday())
-    if (((utcnow.hour > 13) and (utcnow.minute > 30)) and (utcnow.hour < 20)):
-        messagebox.showwarning('Warning', 'Markets are still open')
-        return False
-    else:
-        return True
+    # now = datetime.now()
+    # utcnow = datetime.now(timezone.utc)
+    # print(utcnow.time())
+    # # print(utcnow.weekday())
+    # if (((utcnow.hour > 13) and (utcnow.minute > 30)) and (utcnow.hour < 20)):
+    #     messagebox.showwarning('Warning', 'Markets are still open')
+    #     return False
+    # else:
+    #     return True
+    return False
     
+def getMarketTime():
+    utc_time = datetime.now(timezone.utc)
+    utc_start = utc_time.replace(hour=13, minute=30, second=0, microsecond=0)
+    utc_end = utc_time.replace(hour=20, minute=0, second=0, microsecond=0)
+    localTZ = datetime.now(timezone.utc).astimezone().tzinfo
+    local_start = utc_start.astimezone(localTZ)
+    local_end = utc_end.astimezone(localTZ)
+    # print('utc_start:', utc_start, '\nlocal_start:', local_start,'\nutc_end:', utc_end, '\nlocal_end:', local_end)
+    return [local_start.strftime('%I:%M %p'), local_end.strftime('%I:%M %p'), localTZ]
 
 def main():
     # last_active_row()
-    # print('In Main()')
+    # marketClosed = isMarketOpen()
     marketClosed = isMarketOpen()
     if marketClosed == True:
         getLastStockEntry()
+    else:
+        mktHours = getMarketTime()
+        mrktOpenMsg = ('NYSE and NASDAQ are still open.\nPlease wait for markets to close.\nMarket hours are:\nMon - Fri\n{0} - {1} {2}').format(mktHours[0],mktHours[1],mktHours[2])
+        messagebox.showwarning('Markets still open', mrktOpenMsg)
 
 if __name__ == '__main__':
     main()
