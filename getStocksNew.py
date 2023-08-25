@@ -89,11 +89,16 @@ def formatHeader(wb_obj):
 
 # Check to see if the NYSE/NASDAQ is open or closed. Script only run if NYSE/NASDAQ is closed
 def isMarketOpen():
-    # Get current UTC date/time
     utcnow = datetime.now(timezone.utc)
-    utcnow_hour_min = '{0}:{1}'.format(utcnow.hour, utcnow.minute)
-    if ((utcnow_hour_min > '13:30') and (utcnow.hour < 20)):
-        return True
+    nytz = ZoneInfo('America/New_York')
+    nynow = utcnow.astimezone(nytz)
+    nywday = nynow.isoweekday()
+    if nywday > 0 and nywday < 6:
+        utcnow_hour_min = '{0}:{1}'.format(utcnow.hour, utcnow.minute)
+        if (((utcnow_hour_min > '13:30')) and (utcnow.hour < 20)):
+            return False
+        else:
+            return True
     else:
         return False
 
