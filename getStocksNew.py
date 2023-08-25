@@ -12,6 +12,7 @@ get the closing price.  It will then save the data to an Excel spreadsheet.
 import yfinance as yf
 from tkinter import messagebox
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 import openpyxl
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill
@@ -96,11 +97,11 @@ def isMarketOpen():
     if nywday > 0 and nywday < 6:
         utcnow_hour_min = '{0}:{1}'.format(utcnow.hour, utcnow.minute)
         if (((utcnow_hour_min > '13:30')) and (utcnow.hour < 20)):
-            return False
-        else:
             return True
+        else:
+            return False
     else:
-        return False
+        return True
 
 # Get the hours the NYSE and NASDAQ are open and return 
 # a list with time_open, time_close and timezone strings for local timezone
