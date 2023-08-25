@@ -184,7 +184,7 @@ def main():
     marketOpen = isMarketOpen()
     if marketOpen == True:
         mktHours = getMarketOpenHours()
-        mrktOpenMsg = ('NYSE and NASDAQ are still open.\nPlease wait for markets to close.\nMarket hours are:\nMon - Fri\n{0} - {1} {2}').format(mktHours[0],mktHours[1],mktHours[2])
+        mrktOpenMsg = ('NYSE and NASDAQ are currently open.\nPlease wait for these exchanges to close.\nMarket hours are:\nMon - Fri\n{0} - {1} {2}').format(mktHours[0],mktHours[1],mktHours[2])
         messagebox.showwarning('Markets still open', mrktOpenMsg)
     else:
         # messagebox.showinfo('Dialog', 'Market is closed')
