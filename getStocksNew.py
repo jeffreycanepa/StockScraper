@@ -104,7 +104,7 @@ def isMarketOpen():
         return True
 
 # Get the hours the NYSE and NASDAQ are open and return 
-# a list with time_open, time_close and timezone strings for local timezone
+# a list with time_open, time_close and timezone strings for user's local timezone
 def getMarketOpenHours():
     utc_time = datetime.now(timezone.utc)
     utc_start = utc_time.replace(hour=13, minute=30, second=0, microsecond=0)
@@ -127,28 +127,23 @@ def hasScriptBeenRunToday():
     else:
        return False
 
-def getStockData():
-    # Get current date string formatted my way in user's timezone
-    datestr = datetime.now().strftime('%Y-%m-%d')
-
+# Create/Open the Excel file, format it if new, then return the workbook object
+def openExcelFile():
     # Create/open xlsx file for storing data
     try:
         # Open workbook
         wb_obj = openpyxl.load_workbook(myFile)
-        checkStocks(wb_obj, datestr)
-        
+           
     except FileNotFoundError as e:
         wb_obj = Workbook()
         createSheets(wb_obj)
         createColumnNames(wb_obj)
         formatHeader(wb_obj)
-        checkStocks(wb_obj, datestr)
  
     except UnboundLocalError as e:
         print(e)
     
-    # Save the file
-    wb_obj.save(myFile)
+    return wb_obj
 
 # Using myStocks, get stock data on each stock and write it out to file
 def checkStocks(wb_obj, datestr):
@@ -180,6 +175,9 @@ def checkStocks(wb_obj, datestr):
         cell.number_format = '0.00'
 
 def main():
+    # Get current date string formatted my way in user's timezone
+    datestr = datetime.now().strftime('%Y-%m-%d')
+
     # Check if NYSE/NASDAQ are open
     marketOpen = isMarketOpen()
     if marketOpen == True:
@@ -187,10 +185,13 @@ def main():
         mrktOpenMsg = ('NYSE and NASDAQ are currently open.\nPlease wait for these exchanges to close.\nMarket hours are:\nMon - Fri\n{0} - {1} {2}').format(mktHours[0],mktHours[1],mktHours[2])
         messagebox.showwarning('Markets still open', mrktOpenMsg)
     else:
-        # messagebox.showinfo('Dialog', 'Market is closed')
+        # Check to see if the script was already run today
         alreadyRun = hasScriptBeenRunToday()
         if alreadyRun == False:
-            getStockData()
+            myWorkBook = openExcelFile()
+            checkStocks(myWorkBook, datestr)
+            # Save the file
+            myWorkBook.save(myFile)
         else:
             messagebox.showerror('Script has already run', 'This script was already run today.\nNo action will be taken.')
 
