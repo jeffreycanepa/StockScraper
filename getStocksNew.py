@@ -5,14 +5,15 @@ script uses yFinance to lookup some of the stocks that I own and will
 get the closing price.  It will then save the data to an Excel spreadsheet.
 
     To Do: 
-    1) Read in stocks from external file 
-    2) Add UI to add/remove stocks
+    1) Add UI to add/remove stocks?
+    2) Add graphing of data (once alot more data has been collected)
 '''
 
 import yfinance as yf
 from tkinter import messagebox
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
+import csv
 import openpyxl
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill
@@ -20,8 +21,20 @@ from openpyxl.styles import Font
 from openpyxl.styles import Alignment
 
 # Global Variables
-myStocks = ['AAPL', 'ADBE', 'CSCO', 'NTAP', 'MSFT', 'AMZN', 'TSLA', 'VMW', 'DOCU', 'SPLK', 'XLU']
+myStocks = []
 myFile = 'myStocks.xlsx'
+
+# Get list of stocks from external .csv file stocktickers.csv
+def getStockTickers():
+    try:
+        with open('stocktickers.csv', 'r') as read_obj:
+            csv_reader = csv.reader(read_obj)
+            stockTickers = list(csv_reader)[0]
+    except FileNotFoundError as e:
+        print(e)
+    except:
+        print('Something went wrong with accessing file stocktickers.csv')
+    return stockTickers
 
 # Calculate the difference between today's price and yesterday's price
 def getChange(curPrice, oldPrice):
@@ -133,7 +146,7 @@ def openExcelFile():
     try:
         # Open workbook
         wb_obj = openpyxl.load_workbook(myFile)
-           
+
     except FileNotFoundError as e:
         wb_obj = Workbook()
         createSheets(wb_obj)
@@ -188,7 +201,12 @@ def main():
         # Check to see if the script was already run today
         alreadyRun = hasScriptBeenRunToday()
         if alreadyRun == False:
+            # Get stock tickers
+            global myStocks
+            myStocks = getStockTickers()
+            # Open excel file
             myWorkBook = openExcelFile()
+            # Get stock quotes
             checkStocks(myWorkBook, datestr)
             # Save the file
             myWorkBook.save(myFile)
