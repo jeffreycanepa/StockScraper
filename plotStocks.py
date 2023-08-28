@@ -45,7 +45,7 @@ def get_dates():
     end_date = now.strftime('%Y-%m-%d')
     return [start_date, end_date] 
 
-# readStockFile()- Get stock ticker and company name data from file stocktickersdict.csv
+# readStockFile()- Get stock ticker and company name data from file stocktickers.csv
 # Requires:
 #   External .csv file with stock ticker and company name data
 #
