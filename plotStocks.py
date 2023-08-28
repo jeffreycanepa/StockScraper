@@ -19,18 +19,16 @@
 '''
 # Import Stuff
 import yfinance as yf
+import csv
 import matplotlib.pyplot as plt
 import seaborn as sns; sns.set()
 from datetime import datetime, timedelta
 
 #Global variables
 dates = []
-ticker = ['AAPL', 'ADBE', 'CSCO', 'NTAP', 'AMZN', 'MSFT', 'VMW',
-          'TSLA', 'DOCU', 'SPLK', 'GE', 'XLU']
+ticker = []
 company = []
-company_name = ['Apple Computer', 'Adobe Systems', 'Cisco Systems', 'NetApp',
-                'Amazon', 'Microsoft Corporation', 'VMWare', 'Tesla', 'Docusign',
-                'Splunk', 'General Electric', 'Utilities Select Sector']
+company_names = []
 colors = ['blue', 'red', 'black', 'yellow', 'orange', 'green', 'navy',
           'hotpink', 'lightsteelblue', 'mediumspringgreen', 'grey',
           'sandybrown']
@@ -43,9 +41,30 @@ colors = ['blue', 'red', 'black', 'yellow', 'orange', 'green', 'navy',
 def get_dates():
     # Date must be in the format ("%Y-%m-%d") That is, year-month-day
     now = datetime.now()
-    start_date = (now - timedelta(days=356)).strftime('%Y-%m-%d')
+    start_date = (now - timedelta(days=365)).strftime('%Y-%m-%d')
     end_date = now.strftime('%Y-%m-%d')
     return [start_date, end_date] 
+
+# readStockFile()- Get stock ticker and company name data from file stocktickersdict.csv
+# Requires:
+#   External .csv file with stock ticker and company name data
+#
+# Returns:
+#
+def readStockFile():
+    global ticker
+    global company_names
+    try:
+        with open('stocktickers.csv', 'r') as read_obj:
+            csv_reader = csv.reader(read_obj)
+            companys = list(csv_reader)
+        for cticker, cname in companys:
+            ticker.append(cticker)
+            company_names.append(cname) 
+    except FileNotFoundError as e:
+        print(e)
+    except:
+        print('Something went wrong with accessing file stocktickers.csv')
 
 # get_data()- Get stock data.
 # Requires: 
@@ -79,10 +98,15 @@ def plot_data(company, colors):
 # main()
 def main():
     global dates
+    global ticker
+    global company_names
     dates = get_dates()
 
+    # Get tickers and company names from csv file
+    readStockFile()
+
     # Populate list company[] with stock data for the provided ticker
-    for cmp, name in zip(ticker, company_name):
+    for cmp, name in zip(ticker, company_names):
         company.append(get_data(cmp, name))
 
     # Using Matplotlib display company stock data

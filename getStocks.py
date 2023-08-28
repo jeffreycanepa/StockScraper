@@ -25,16 +25,17 @@ myStocks = []
 myFile = 'myStocks.xlsx'
 
 # Get list of stocks from external .csv file stocktickers.csv
-def getStockTickers():
+def readStockFile():
     try:
         with open('stocktickers.csv', 'r') as read_obj:
             csv_reader = csv.reader(read_obj)
-            stockTickers = list(csv_reader)[0]
+            stockTickers = list(csv_reader)
+        for cticker in stockTickers:
+            myStocks.append(cticker[0])
     except FileNotFoundError as e:
         print(e)
     except:
         print('Something went wrong with accessing file stocktickers.csv')
-    return stockTickers
 
 # Calculate the difference between today's price and yesterday's price
 def getChange(curPrice, oldPrice):
@@ -202,8 +203,7 @@ def main():
         alreadyRun = hasScriptBeenRunToday()
         if alreadyRun == False:
             # Get stock tickers
-            global myStocks
-            myStocks = getStockTickers()
+            readStockFile()
             # Open excel file
             myWorkBook = openExcelFile()
             # Get stock quotes
