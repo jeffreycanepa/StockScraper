@@ -19,3 +19,8 @@ Requires:
 - csv
 - datetime
 - .csv file (stocktickers.csv) that contains stock tickers / company names.
+- - The csv file is looking for the following columns for each row (company).
+- - - Ticker: (The company ticker on NYSE or  Nasdaq)
+- - - Company Name: The Company name
+- - - Color: A seaborn compliant color to use in the data plot
+- - - Style: A seaborn compliant line style to use in the data plot
