@@ -35,12 +35,11 @@ from datetime import datetime, timedelta
 
 #Global variables
 dates = []
-ticker = []
+tickers = []
 company = []
 company_names = []
-colors = ['blue', 'red', 'black', 'yellow', 'orange', 'green', 'navy',
-          'hotpink', 'lightsteelblue', 'mediumspringgreen', 'grey',
-          'sandybrown']
+# List of lists with seaborn line colors and line styles
+linestyle = []
 
 # get_dates()- Get start/end dates for stock lookup.
 # Requires: 
@@ -57,22 +56,24 @@ def get_dates(numdays):
     end_date = now.strftime('%b %d, %Y')
     return [yfinance_start_date, yfinance_end_date, start_date, end_date] 
 
-# read_stock_file()- Get stock ticker and company name data from file stocktickers.csv
+# read_stock_file()- Get stock tickers and company name data from file stocktickers.csv
 # Requires:
-#   External .csv file with stock ticker and company name data
+#   External .csv file with stock tickers and company name data
 #
 # Returns:
 #
 def read_stock_file():
-    global ticker
+    global tickers
     global company_names
+    global linestyle
     try:
         with open('stocktickers.csv', 'r') as read_obj:
             csv_reader = csv.reader(read_obj)
             companys = list(csv_reader)
-        for cticker, cname in companys:
-            ticker.append(cticker)
+        for cticker, cname, ccolor, cstyle in companys:
+            tickers.append(cticker)
             company_names.append(cname) 
+            linestyle.append([ccolor, cstyle])
     except FileNotFoundError as e:
         print(e)
     except:
@@ -95,19 +96,19 @@ def get_data(symbol, cname):
 # plot_data()- Plot stock data using Matplotlib and add it to Tkinter window
 # Requires:
 #   company-  a list of company objects containing stock data
-#   colors-   a list of strings that are colors used by Matplotlib
+#   linestyle-   a list of strings that are linestyle used by Matplotlib
 #   window-   a tkinter window 
 # Returns:
 #
-def plot_data(company, colors, window):
+def plot_data(company, linestyle, window):
     # Create plot using matplotlib
     fig = plt.figure(figsize=(13, 7))
-    sns.set_style('ticks')
-    for cmp, clr in zip(company,colors):
-        sns.lineplot(data=cmp,x="Date",y="Close",color=clr,linewidth=2.5, label=cmp.name)
+    sns.set_style('darkgrid')
+    for cmp, lstyle in zip(company,linestyle):
+        sns.lineplot(data=cmp,x="Date",y="Close",color=lstyle[0],linestyle=lstyle[1], label=cmp.name)
     sns.despine()
     plt.title('Closing Prices\n{0} - {1}'.format(dates[2], dates[3]), size='x-large', color='black')
-    plt.ylabel('Stock Price $')
+    plt.ylabel('Stock Price $ (USD)')
     
     # Create canvas and add it to Tkinter window
     canvas = FigureCanvasTkAgg(fig, master=window)
@@ -124,7 +125,7 @@ def plot_data(company, colors, window):
 # main()
 def main():
     global dates
-    global ticker
+    global tickers
     global company_names
 
     # Get tickers and company names from csv file
@@ -139,16 +140,16 @@ def main():
     numdays = simpledialog.askinteger('Enter Number of Days', 'How many day\'s data do you want?', minvalue=2, maxvalue=10000, parent=window)
     dates = get_dates(numdays)
 
-    window.title(str(numdays) + ' days')
+    window.title('Past ' + str(numdays) + ' Days')
 
-    # Populate list company[] with stock data for the provided ticker
-    for cmp, name in zip(ticker, company_names):
+    # Populate list company[] with stock data for the provided tickers
+    for cmp, name in zip(tickers, company_names):
         company.append(get_data(cmp, name))
     
 
 
     # Using Matplotlib display company stock data
-    plot_data(company, colors, window)
+    plot_data(company, linestyle, window)
 
     window.mainloop()
 
