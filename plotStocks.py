@@ -1,3 +1,4 @@
+# /opt/homebrew/bin/python3
 '''
 --------------------------------------------------------------
 -   plotStocks.py
@@ -20,6 +21,18 @@
 -       plot_data()
 -       main()
 -
+-   Data for stock ticker, company name, line color and line style
+-       are read in from .csv file stocktickers.csv.  The file should
+-       consist of a row of data for every stock you wish to lookup.
+-       Required columns are: 
+-           A: Stock ticker 
+-           B: Company Name
+-           C: seaborn line color
+-           D: seaborn line style
+-
+-   Jeff Canepa
+-   jeff.canepa@gmail.com
+-   Aug 2023
 --------------------------------------------------------------
 '''
 # Import Stuff
