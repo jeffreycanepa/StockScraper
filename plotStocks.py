@@ -12,6 +12,8 @@
 -       datetime
 -
 -   Methods:
+-       get_dates()
+-       read
 -       get_data()
 -       plot_data()
 -
@@ -45,13 +47,13 @@ def get_dates():
     end_date = now.strftime('%Y-%m-%d')
     return [start_date, end_date] 
 
-# readStockFile()- Get stock ticker and company name data from file stocktickers.csv
+# read_stock_file()- Get stock ticker and company name data from file stocktickers.csv
 # Requires:
 #   External .csv file with stock ticker and company name data
 #
 # Returns:
 #
-def readStockFile():
+def read_stock_file():
     global ticker
     global company_names
     try:
@@ -103,7 +105,7 @@ def main():
     dates = get_dates()
 
     # Get tickers and company names from csv file
-    readStockFile()
+    read_stock_file()
 
     # Populate list company[] with stock data for the provided ticker
     for cmp, name in zip(ticker, company_names):
