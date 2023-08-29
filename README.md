@@ -10,11 +10,11 @@ This script uses the yfinance extension to get stock data. Output is to a csv fi
 This script uses yFinance to get financial data then saves the data to a xlsx file using openpyxl.  Requires a .csv file with stock ticker/company name(stocktickers.csv).  Produces .xlsx file (myStocks.xlsx).
 
 ## plotStocks.py- 
-Script that gets the last 365 days of stock data for provided stocks and uses matplotlib to plot the closing prices
-    Requires: 
-    - yfinance
-    - matplotlib
-    - seaborn
-    - csv
-    - datetime
-    - .csv file (stocktickers.csv) that contains stock tickers / company names.
+Script that gets the last x days of stock data for provided stocks and uses matplotlib to plot the closing prices
+Requires: 
+- yfinance
+- matplotlib
+- seaborn
+- csv
+- datetime
+- .csv file (stocktickers.csv) that contains stock tickers / company names.
