@@ -13,7 +13,7 @@
 -
 -   Methods:
 -       get_dates()
--       read
+-       read_stock_file()
 -       get_data()
 -       plot_data()
 -
