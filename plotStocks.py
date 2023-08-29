@@ -150,7 +150,8 @@ def main():
     window.geometry('1000x730')
 
     # Get number of days to look up stock data for
-    numdays = simpledialog.askinteger('Enter Number of Days', 'How many day\'s data do you want?', minvalue=2, maxvalue=10000, parent=window)
+    numdays = simpledialog.askinteger('Enter Number of Days', 'How many day\'s data do you want?', 
+                                      initialvalue=365, minvalue=2, maxvalue=10000, parent=window)
     dates = get_dates(numdays)
 
     window.title('Past ' + str(numdays) + ' Days')
