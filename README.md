@@ -12,7 +12,7 @@ This script uses yFinance to get financial data then saves the data to a xlsx fi
 ## plotStocks.py- 
 Script that gets the last x days of stock data for provided stocks and uses matplotlib to plot the closing prices
 
-## Requires: 
+#### Requires: 
 - yfinance
 - matplotlib
 - seaborn
