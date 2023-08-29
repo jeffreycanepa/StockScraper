@@ -12,15 +12,15 @@ This script uses yFinance to get financial data then saves the data to a xlsx fi
 ## plotStocks.py- 
 Script that gets the last x days of stock data for provided stocks and uses matplotlib to plot the closing prices
 
-Requires: 
+## Requires: 
 - yfinance
 - matplotlib
 - seaborn
 - csv
 - datetime
 - .csv file (stocktickers.csv) that contains stock tickers / company names.
-- - The csv file is looking for the following columns for each row (company).
-- - - Ticker: (The company ticker on NYSE or  Nasdaq)
-- - - Company Name: The Company name
-- - - Color: A seaborn compliant color to use in the data plot
-- - - Style: A seaborn compliant line style to use in the data plot
+    The csv file is looking for the following columns for each row (company).
+- - Ticker: (The company ticker on NYSE or  Nasdaq)
+- - Company Name: The Company name
+- - Color: A seaborn compliant color to use in the data plot
+- - Style: A seaborn compliant line style to use in the data plot
