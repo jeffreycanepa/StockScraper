@@ -130,16 +130,21 @@ def getMarketOpenHours():
 
 # Check to see if script was already run.  Looks for last date in excel workbook.
 def hasScriptBeenRunToday():
-    workbook = openpyxl.load_workbook(myFile)
-    wp = workbook.active
-    last_row = wp.max_row
-    todayDate = datetime.now().strftime('%Y-%m-%d')
-    prevDate = wp.cell(last_row, 1).value
-    if todayDate == prevDate:
-        # Script has already been run today
-        return True
-    else:
-       return False
+    try:
+        workbook = openpyxl.load_workbook(myFile)
+        wp = workbook.active
+        last_row = wp.max_row
+        todayDate = datetime.now().strftime('%Y-%m-%d')
+        prevDate = wp.cell(last_row, 1).value
+        if todayDate == prevDate:
+            # Script has already been run today
+            return True
+        else:
+            return False
+    except FileNotFoundError as e:
+        return False
+    except:
+        print(e)
 
 # Create/Open the Excel file, format it if new, then return the workbook object
 def openExcelFile():
