@@ -109,7 +109,7 @@ def isMarketOpen():
     nynow = utcnow.astimezone(nytz)
     nywday = nynow.isoweekday()
     if nywday > 0 and nywday < 6:
-        utcnow_hour_min = '{0}:{1}'.format(utcnow.hour, utcnow.minute)
+        utcnow_hour_min = utcnow.strftime('%H:%M')
         if (((utcnow_hour_min > '13:30')) and (utcnow.hour < 20)):
             return True
         else:
