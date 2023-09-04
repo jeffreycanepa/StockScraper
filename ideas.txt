@@ -1,1 +1,1 @@
-/Users/jcanepa/Documents/Seniors Nigh.rtf
+1) Add widget to allow/disallow trend line
