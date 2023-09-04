@@ -113,15 +113,20 @@ def get_selected_companies(company_names, window):
     cwindow = Toplevel()
     cwindow.title('Select Companies')
     cwindow.geometry('200x440')
+    cb = IntVar()
  
     # Create a LabelFrame
     frame =LabelFrame(cwindow, text="Select the Companies", padx=20, pady=20)
     frame.pack(pady=20, padx=10)
 
-    # Add method to select all checkboxes
-    def select_all():
-        for i in cbuts:
-            i.select()
+    # Add method to select/deselect all checkboxes
+    def select_deselect_all():
+        if cb.get() == 1:
+            for i in cbuts:
+                i.select()
+        else:
+            for i in cbuts:
+                i.deselect()
 
     # array of the button values
     for x in range(11):
@@ -130,7 +135,7 @@ def get_selected_companies(company_names, window):
     for index, item in enumerate(company_names):
         cbuts.append(Checkbutton(frame, text=item, anchor='w', width=50, variable=btvars[index], onvalue=1, offvalue=0))
         cbuts[index].pack()
-    Checkbutton(cwindow, text='Select All', width=10, height=2, command=select_all).pack()
+    Checkbutton(cwindow, text='Select All',variable=cb, onvalue=1, offvalue=0, width=10, height=2, command=select_deselect_all).pack()
     Button(cwindow, text='Enter', command=lambda:[set_selected_companies(), get_company_data(),
                                                   cwindow.destroy(), plot_window(window)]).pack()
                 

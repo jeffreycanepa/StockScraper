@@ -23,15 +23,20 @@ def getselecteCompanies(company_names):
     window = tk.Tk()
     window.title('My Window')
     window.geometry('200x440')
- 
+    cb = tk.IntVar()
+
     # Create a LabelFrame
     frame =tk.LabelFrame(window, text="Select the Companies", padx=20, pady=20)
     frame.pack(pady=20, padx=10)
 
     # Add method to select all checkboxes
     def select_all():
-        for i in cbuts:
-            i.select()
+        if cb.get() == 1:
+            for i in cbuts:
+                i.select()
+        else:
+            for i in cbuts:
+                i.deselect()
 
     # array of the button values
     for x in range(11):
@@ -40,7 +45,7 @@ def getselecteCompanies(company_names):
     for index, item in enumerate(company_names):
         cbuts.append(tk.Checkbutton(frame, text=item, anchor='w', width=50, variable=btvars[index], onvalue=1, offvalue=0))
         cbuts[index].pack()
-    tk.Checkbutton(window, text='Select All', width=10, height=2, command=select_all).pack()
+    toggleSelect = tk.Checkbutton(window, text='Select All',variable=cb, width=10, height=2, onvalue=1, offvalue=0, command=select_all).pack()
     tk.Button(window, text='Enter', command=lambda:[setSelectedCompanies(), window.destroy()]).pack()
                 
     window.mainloop()
