@@ -18,16 +18,22 @@ company_names = ['Apple','Adobe','Cisco','NetApp','Microsoft','Amazon','Tesla',
 cbuts = []
 selectedCompanies = []
 btvars = []
+tl = None
 
 def getselecteCompanies(company_names):
     window = tk.Tk()
     window.title('My Window')
-    window.geometry('200x440')
+    window.geometry('200x460')
+    tline = tk.IntVar()
     cb = tk.IntVar()
 
     # Create a LabelFrame
     frame =tk.LabelFrame(window, text="Select the Companies", padx=20, pady=20)
-    frame.pack(pady=20, padx=10)
+    frame.pack(padx=10) #pady=20, padx=10
+
+    # Create a frame for checkboxes
+    frame2 = tk.Frame(window)
+    frame2.pack()
 
     # Add method to select all checkboxes
     def select_all():
@@ -37,15 +43,21 @@ def getselecteCompanies(company_names):
         else:
             for i in cbuts:
                 i.deselect()
+    
+    def showline():
+        global tl
+        if tline.get() == 1:
+            tl = 1
 
     # array of the button values
     for x in range(11):
         btvars.append(tk.IntVar())
 
     for index, item in enumerate(company_names):
-        cbuts.append(tk.Checkbutton(frame, text=item, anchor='w', width=50, variable=btvars[index], onvalue=1, offvalue=0))
+        cbuts.append(tk.Checkbutton(frame, text=item, anchor='w', width=50, variable=btvars[index], onvalue=1, offvalue=0, command=tline))
         cbuts[index].pack()
-    toggleSelect = tk.Checkbutton(window, text='Select All',variable=cb, width=10, height=2, onvalue=1, offvalue=0, command=select_all).pack()
+    tk.Checkbutton(frame2, text='Select All', anchor='w', width=15, variable=cb, onvalue=1, offvalue=0, command=select_all).pack()
+    tk.Checkbutton(frame2, text='Display Trendline', anchor='w', width=15, variable=tline, onvalue=1, offvalue=0, command=showline).pack()
     tk.Button(window, text='Enter', command=lambda:[setSelectedCompanies(), window.destroy()]).pack()
                 
     window.mainloop()
@@ -57,7 +69,9 @@ def setSelectedCompanies():
 
 def main():
     getselecteCompanies(company_names)
-    print(selectedCompanies)
+    # print(selectedCompanies)
+    print(tl)
 
 if __name__ == "__main__":
     main()
+    
