@@ -62,6 +62,8 @@ cbuts = []
 selected_companies = []
 btvars = []
 numdays = 0
+trendline = None
+
 
 # get_dates()- Get start/end dates for stock lookup.
 # Requires: 
@@ -113,6 +115,7 @@ def get_selected_companies(company_names, window):
     cwindow = Toplevel()
     cwindow.title('Select Companies')
     cwindow.geometry('200x440')
+    tline = IntVar()
     cb = IntVar()
  
     # Add method to select/deselect all checkboxes
@@ -123,6 +126,11 @@ def get_selected_companies(company_names, window):
         else:
             for i in cbuts:
                 i.deselect()
+
+    def showline():
+        global trendline
+        if tline.get() == 1:
+            trendline = 1
 
     # Create a LabelFrame
     frame =LabelFrame(cwindow, text="Select the Companies", padx=20, pady=20)
@@ -135,7 +143,8 @@ def get_selected_companies(company_names, window):
     for index, item in enumerate(company_names):
         cbuts.append(Checkbutton(frame, text=item, anchor='w', width=50, variable=btvars[index], onvalue=1, offvalue=0))
         cbuts[index].pack()
-    Checkbutton(cwindow, text='Select All',variable=cb, onvalue=1, offvalue=0, width=10, height=2, command=select_deselect_all).pack()
+    Checkbutton(cwindow, text='Select All', anchor='w', width=15, variable=cb, onvalue=1, offvalue=0, command=select_deselect_all).pack()
+    Checkbutton(cwindow, text='Display Trendline', anchor='w', width=15, variable=tline, onvalue=1, offvalue=0, command=showline).pack()
     Button(cwindow, text='Enter', command=lambda:[set_selected_companies(), get_company_data(),
                                                   cwindow.destroy(), plot_window(window)]).pack()
                 
@@ -203,7 +212,10 @@ def plot_data(company, linestyle, window):
 
         # Add Closing price for stock as a line and as a linear regression (trend line)
         ax1 = sns.lineplot(data=cmp,x=cmp.index,y="Close",color=lstyle[0],linestyle=lstyle[1], label=cmp.name)
-        sns.regplot(data=data, x=cmp.index, y='Close', color=lstyle[0], scatter=False, ci=False)
+        
+        # If user checked to show trendline, then add trendline to the plot
+        if trendline == 1:
+            sns.regplot(data=data, x=cmp.index, y='Close', color=lstyle[0], scatter=False, ci=False)
 
         ax1.set_xlim(cmp.index[0], cmp.index[-1])
 
