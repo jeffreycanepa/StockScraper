@@ -115,10 +115,6 @@ def get_selected_companies(company_names, window):
     cwindow.geometry('200x440')
     cb = IntVar()
  
-    # Create a LabelFrame
-    frame =LabelFrame(cwindow, text="Select the Companies", padx=20, pady=20)
-    frame.pack(pady=20, padx=10)
-
     # Add method to select/deselect all checkboxes
     def select_deselect_all():
         if cb.get() == 1:
@@ -127,6 +123,10 @@ def get_selected_companies(company_names, window):
         else:
             for i in cbuts:
                 i.deselect()
+
+    # Create a LabelFrame
+    frame =LabelFrame(cwindow, text="Select the Companies", padx=20, pady=20)
+    frame.pack(pady=20, padx=10)
 
     # array of the button values
     for x in range(11):
