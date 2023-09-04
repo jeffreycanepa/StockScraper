@@ -18,8 +18,11 @@
 -   Methods:
 -       get_dates()
 -       read_stock_file()
+-       get_selected_companies()
+-       set_selected_companies()
 -       get_data()
 -       plot_data()
+-       plot_window()
 -       main()
 -
 -   Data for stock ticker, company name, line color and line style
@@ -51,13 +54,14 @@ from datetime import datetime, timedelta
 #Global variables
 dates = []
 tickers = []
-company = []
+company_data = []
 company_names = []
 # List of lists with seaborn line colors and line styles
 linestyle = []
 cbuts = []
 selected_companies = []
 btvars = []
+numdays = 0
 
 # get_dates()- Get start/end dates for stock lookup.
 # Requires: 
@@ -97,9 +101,17 @@ def read_stock_file():
     except:
         print('Something went wrong with accessing file stocktickers.csv')
 
-def getselectedCompanies(company_names):
-    cwindow = Tk()
-    cwindow.title('My Window')
+# get_selected_companies()- Ask user to select the stocks to lookup data for
+#
+# Requires:
+#   company_names- a list of strings that are Company names
+#   window- The root window
+#
+#   Returns:
+#
+def get_selected_companies(company_names, window):
+    cwindow = Toplevel()
+    cwindow.title('Select Companies')
     cwindow.geometry('200x440')
  
     # Create a LabelFrame
@@ -119,14 +131,36 @@ def getselectedCompanies(company_names):
         cbuts.append(Checkbutton(frame, text=item, anchor='w', width=50, variable=btvars[index], onvalue=1, offvalue=0))
         cbuts[index].pack()
     Checkbutton(cwindow, text='Select All', width=10, height=2, command=select_all).pack()
-    Button(cwindow, text='Enter', command=lambda:[setSelectedCompanies(), cwindow.destroy()]).pack()
+    Button(cwindow, text='Enter', command=lambda:[set_selected_companies(), get_company_data(),
+                                                  cwindow.destroy(), plot_window(window)]).pack()
                 
     cwindow.mainloop()
 
-def setSelectedCompanies():
+# set_selected_companies()- Create a list of objects (selected_companies) with company name and
+#                           company stock ticker based on returned from get_selected_companies
+# Required:
+#   company_names
+#   btvars
+#   selected_companies
+#   tickers
+#
+# Returned:
+#  
+def set_selected_companies():
     for index, item in enumerate(company_names):
         if btvars[index].get() == 1:
             selected_companies.append([item,tickers[index]])
+
+# get_company_data()- Using selected_companies(), get stock data and store results in list company
+#
+# Required:
+#   selected_companies
+#
+# Returns:
+#
+def get_company_data():
+    for item in (selected_companies):
+        company_data.append(get_data(item))
 
 # get_data()- Get stock data.
 # Requires: 
@@ -190,22 +224,41 @@ def plot_data(company, linestyle, window):
     # placing the toolbar on the Tkinter window
     canvas.get_tk_widget().pack()
 
-def plot_window(numdays):
+# plot_window()- A tk window for displaying the data plot from plot_data().  Quiting dialog
+#               quits the app.
+#
+# Required:
+#   company_data
+#   linestyle
+#
+# Returns:
+#
+def plot_window(window):
     # Create the window
-    window = Tk()
-    window.title('Plot Stocks')
-    window.geometry('1000x730')
-    
-    # Using Matplotlib display company stock data
-    plot_data(company, linestyle, window)
+    plotWindow = Toplevel()
+    plotWindow.title('Past ' + str(numdays) + ' Days')
+    plotWindow.geometry('1000x770')
 
-    window.mainloop() 
+    # Using Matplotlib display company stock data
+    plot_data(company_data, linestyle, plotWindow)
+
+    # Add a button to quit when done viewing the plot data
+    bt_1 = Button(plotWindow, text='Quit', command=window.quit).pack()
+
+    plotWindow.mainloop() 
+    exit(0)
 
 # main()
 def main():
     global dates
     global tickers
     global company_names
+    global numdays
+
+    # Create the parent window
+    window = Tk()
+    window.title('Root')
+    window.withdraw()
 
     # Get number of days to look up stock data for
     numdays = simpledialog.askinteger('Enter Number of Days', 'How many day\'s data do you want?', 
@@ -214,30 +267,11 @@ def main():
 
     # Get tickers and company names from csv file
     read_stock_file()
-    getselectedCompanies(company_names)
-    # print(selectedCompanies)
 
-    # Populate list company[] with stock data for the provided tickers
-    for item in (selected_companies):
-        company.append(get_data(item))
+    # Get this ball rolling
+    get_selected_companies(company_names, window)
 
-    plot_window(numdays)
-    # # Create the window
-    # window = Tk()
-    # window.title('Plot Stocks')
-    # window.geometry('1000x730')
-
-
-    # window.title('Past ' + str(numdays) + ' Days')
-
-
-
-    
-    
-    # # Using Matplotlib display company stock data
-    # plot_data(company, linestyle, window)
-
-    # window.mainloop()
+    window.mainloop()
 
 if __name__ == "__main__":
     main()
