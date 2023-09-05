@@ -54,14 +54,14 @@ from datetime import datetime, timedelta
 #Global variables
 dates = []
 tickers = []
-company_data = []
 company_names = []
-# List of lists with seaborn line colors and line styles
-linestyle = []
+company_data = []
 cbuts = []
 selected_companies = []
+# List of lists with seaborn line colors and line styles
+linestyle = []
 btvars = []
-numdays = 0
+numdays = None
 trendline = None
 
 
@@ -111,13 +111,21 @@ def read_stock_file():
 #
 #   Returns:
 #
-def get_selected_companies(company_names, window):
-    cwindow = Toplevel()
+def get_selected_companies():
+    cwindow = Tk()
     cwindow.title('Select Companies')
-    cwindow.geometry('200x440')
+    cwindow.geometry('200x400')
     tline = IntVar()
     cb = IntVar()
- 
+
+    # Create a LabelFrame
+    frame =LabelFrame(cwindow, text="Select the Companies", padx=5, pady=5) #, padx=10, pady=5
+    frame.pack(padx=10, pady=10) #pady=20, padx=10
+
+     # Create a frame for checkboxes
+    frame2 = Frame(cwindow, padx=5, pady=5)
+    frame2.pack(padx=10)
+
     # Add method to select/deselect all checkboxes
     def select_deselect_all():
         if cb.get() == 1:
@@ -132,21 +140,16 @@ def get_selected_companies(company_names, window):
         if tline.get() == 1:
             trendline = 1
 
-    # Create a LabelFrame
-    frame =LabelFrame(cwindow, text="Select the Companies", padx=20, pady=20)
-    frame.pack(pady=20, padx=10)
-
     # array of the button values
     for x in range(11):
         btvars.append(IntVar())
 
     for index, item in enumerate(company_names):
-        cbuts.append(Checkbutton(frame, text=item, anchor='w', width=50, variable=btvars[index], onvalue=1, offvalue=0))
+        cbuts.append(Checkbutton(frame, text=item, anchor='w', width=50, variable=btvars[index], onvalue=1, offvalue=0, command=tline))
         cbuts[index].pack()
-    Checkbutton(cwindow, text='Select All', anchor='w', width=15, variable=cb, onvalue=1, offvalue=0, command=select_deselect_all).pack()
-    Checkbutton(cwindow, text='Display Trendline', anchor='w', width=15, variable=tline, onvalue=1, offvalue=0, command=showline).pack()
-    Button(cwindow, text='Enter', command=lambda:[set_selected_companies(), get_company_data(),
-                                                  cwindow.destroy(), plot_window(window)]).pack()
+    Checkbutton(frame2, text='Select All', anchor='w', width=15, variable=cb, onvalue=1, offvalue=0, command=select_deselect_all).pack()
+    Checkbutton(frame2, text='Display Trendline', anchor='w', width=15, variable=tline, onvalue=1, offvalue=0, command=showline).pack()
+    Button(cwindow, text='Enter', command=lambda:[set_selected_companies(), cwindow.destroy()]).pack()
                 
     cwindow.mainloop()
 
@@ -184,6 +187,7 @@ def get_company_data():
 #   stockData- object containing stock data for past year for the provided symbol
 #
 def get_data(item):
+    global dates
     stockData = yf.download(tickers = item[1],
                          start= dates[0],
                          end= dates[1])
@@ -245,14 +249,13 @@ def plot_data(company, linestyle, window):
 #               quits the app.
 #
 # Required:
-#   company_data
-#   linestyle
+#   numdays
 #
 # Returns:
 #
-def plot_window(window):
+def plot_window():
     # Create the window
-    plotWindow = Toplevel()
+    plotWindow = Tk()
     plotWindow.title('Past ' + str(numdays) + ' Days')
     plotWindow.geometry('1000x770')
 
@@ -260,22 +263,17 @@ def plot_window(window):
     plot_data(company_data, linestyle, plotWindow)
 
     # Add a button to quit when done viewing the plot data
-    bt_1 = Button(plotWindow, text='Quit', command=window.quit).pack()
+    bt_1 = Button(plotWindow, text='Quit', command=plotWindow.quit).pack()
 
     plotWindow.mainloop() 
-    exit(0)
+    # exit(0)
 
 # main()
 def main():
     global dates
-    global tickers
-    global company_names
-    global numdays
-
-    # Create the parent window
-    window = Tk()
-    window.title('Root')
-    window.withdraw()
+    # global tickers
+    # global company_names
+    # global numdays
 
     # Get number of days to look up stock data for
     numdays = simpledialog.askinteger('Enter Number of Days', 'How many day\'s data do you want?', 
@@ -285,10 +283,14 @@ def main():
     # Get tickers and company names from csv file
     read_stock_file()
 
-    # Get this ball rolling
-    get_selected_companies(company_names, window)
+    # Get selection of companies from user
+    get_selected_companies()
 
-    window.mainloop()
+    # Fetch the stock data from yfinance
+    get_company_data()
+
+    # Plot the stock data and display
+    plot_window()
 
 if __name__ == "__main__":
     main()
