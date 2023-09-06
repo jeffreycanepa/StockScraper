@@ -50,6 +50,7 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationTool
 import seaborn as sns; sns.set()
 import pandas as pd
 from datetime import datetime, timedelta
+import sys
 
 #Global variables
 dates = []
@@ -150,7 +151,14 @@ def get_selected_companies():
     Checkbutton(frame2, text='Select All', anchor='w', width=15, variable=cb, onvalue=1, offvalue=0, command=select_deselect_all).pack()
     Checkbutton(frame2, text='Display Trendline', anchor='w', width=15, variable=tline, onvalue=1, offvalue=0, command=showline).pack()
     Button(cwindow, text='Enter', command=lambda:[set_selected_companies(), cwindow.destroy()]).pack()
-                
+
+    # Quit window/app if user closes dialog using the window's close widget.  Using sys.exit.
+    def on_closing():
+        sys.exit()
+
+    cwindow.protocol('WM_DELETE_WINDOW', on_closing)
+
+
     cwindow.mainloop()
 
 # set_selected_companies()- Create a list of objects (selected_companies) with company name and
@@ -259,6 +267,12 @@ def plot_window():
     plotWindow.title('Past ' + str(numdays) + ' Days')
     plotWindow.geometry('1000x770')
 
+    # Quit window/app if user closes dialog using the window's close widget
+    def on_closing():
+        plotWindow.destroy()
+
+    plotWindow.protocol('WM_DELETE_WINDOW', on_closing)
+
     # Using Matplotlib display company stock data
     plot_data(company_data, linestyle, plotWindow)
 
@@ -266,7 +280,6 @@ def plot_window():
     bt_1 = Button(plotWindow, text='Quit', command=plotWindow.quit).pack()
 
     plotWindow.mainloop() 
-    # exit(0)
 
 # main()
 def main():
