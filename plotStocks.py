@@ -115,7 +115,8 @@ def read_stock_file():
 def get_selected_companies():
     cwindow = Tk()
     cwindow.title('Select Companies')
-    cwindow.geometry('200x400')
+    cwindow.geometry('200x410+10+10')
+    # cwindow.eval(f'tk::PlaceWindow {cwindow._w} center')
     tline = IntVar()
     cb = IntVar()
 
