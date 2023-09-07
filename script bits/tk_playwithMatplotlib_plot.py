@@ -186,6 +186,7 @@ def plot_window():
 
 def main():
     global dates
+    global numdays
      # Get number of days to look up stock data for
     numdays = simpledialog.askinteger('Enter Number of Days', 'How many day\'s data do you want?', 
                                       initialvalue=365, minvalue=2, maxvalue=10000)
