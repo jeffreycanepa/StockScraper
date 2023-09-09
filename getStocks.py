@@ -115,7 +115,7 @@ def isMarketOpen():
         else:
             return False
     else:
-        return True
+        return False
 
 # Get the hours the NYSE and NASDAQ are open and return 
 # a list with time_open, time_close and timezone strings for user's local timezone
