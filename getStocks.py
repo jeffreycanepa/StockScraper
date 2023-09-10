@@ -205,7 +205,9 @@ def main():
         messagebox.showwarning('Markets still open', mrktOpenMsg)
     else:
         if marketOpen == 'weekend':
-            messagebox.showinfo('It\'s the weekend!',  'Markets are closed on the weekends.\nNo action will be taken')
+            mktHours = getMarketOpenHours()
+            mktClosedMsg = ('NYSE and NASDAQ are closed on weekends.\nMarket hours are:\nMon - Fri\n{0} - {1} {2}').format(mktHours[0],mktHours[1],mktHours[2])
+            messagebox.showwarning('It\'s the weekend!',  mktClosedMsg)
         else:
             # Check to see if the script was already run today
             alreadyRun = hasScriptBeenRunToday()
