@@ -115,7 +115,7 @@ def isMarketOpen():
         else:
             return False
     else:
-        return False
+        return 'weekend'
 
 # Get the hours the NYSE and NASDAQ are open and return 
 # a list with time_open, time_close and timezone strings for user's local timezone
@@ -204,19 +204,22 @@ def main():
         mrktOpenMsg = ('NYSE and NASDAQ are currently open.\nPlease wait for these exchanges to close.\nMarket hours are:\nMon - Fri\n{0} - {1} {2}').format(mktHours[0],mktHours[1],mktHours[2])
         messagebox.showwarning('Markets still open', mrktOpenMsg)
     else:
-        # Check to see if the script was already run today
-        alreadyRun = hasScriptBeenRunToday()
-        if alreadyRun == False:
-            # Get stock tickers
-            readStockFile()
-            # Open excel file
-            myWorkBook = openExcelFile()
-            # Get stock quotes
-            checkStocks(myWorkBook, datestr)
-            # Save the file
-            myWorkBook.save(myFile)
+        if marketOpen == 'weekend':
+            messagebox.showinfo('It\'s the weekend!',  'Markets are closed on the weekends.\nNo action will be taken')
         else:
-            messagebox.showerror('Script has already run', 'This script was already run today.\nNo action will be taken.')
+            # Check to see if the script was already run today
+            alreadyRun = hasScriptBeenRunToday()
+            if alreadyRun == False:
+                # Get stock tickers
+                readStockFile()
+                # Open excel file
+                myWorkBook = openExcelFile()
+                # Get stock quotes
+                checkStocks(myWorkBook, datestr)
+                # Save the file
+                myWorkBook.save(myFile)
+            else:
+                messagebox.showerror('Script has already run', 'This script was already run today.\nNo action will be taken.')
 
 if __name__ == "__main__":
     main()
