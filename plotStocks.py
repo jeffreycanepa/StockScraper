@@ -65,6 +65,12 @@ btvars = []
 numdays = None
 trendline = None
 
+def get_numdays():
+    # root = tk.Tk()
+    # root.withdraw()
+    numberofdays = simpledialog.askinteger('Enter Number of Days', 'How many day\'s data do you want?', 
+                                      initialvalue=365, minvalue=2, maxvalue=10000)
+    return numberofdays
 
 # get_dates()- Get start/end dates for stock lookup.
 # Requires: 
@@ -285,13 +291,9 @@ def plot_window():
 # main()
 def main():
     global dates
-    # global tickers
-    # global company_names
-    # global numdays
 
     # Get number of days to look up stock data for
-    numdays = simpledialog.askinteger('Enter Number of Days', 'How many day\'s data do you want?', 
-                                      initialvalue=365, minvalue=2, maxvalue=10000)
+    numdays = get_numdays()
     dates = get_dates(numdays)
 
     # Get tickers and company names from csv file
