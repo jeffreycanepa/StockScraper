@@ -65,6 +65,12 @@ btvars = []
 numdays = None
 trendline = None
 
+# get_numdays()- Get number of days to lookup stock data for
+# Requires: 
+#   
+# Returns:
+#   an integer with the number of days input by user
+#
 def get_numdays():
     # root = tk.Tk()
     # root.withdraw()
