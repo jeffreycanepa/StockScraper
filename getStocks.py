@@ -1,8 +1,33 @@
 # /opt/homebrew/bin/python3
 '''
-getStocks: This is my first attempt at a useful Python script.  This
+getStocks.py: This is my first attempt at a useful Python script.  This
 script uses yFinance to lookup some of the stocks that I own and will
 get the closing price.  It will then save the data to an Excel spreadsheet.
+The script will not fetch stock prices while the Nasdaq and NYSE are open.
+It will also not fetch data on the weekends.
+
+    Requires:
+       yfinance
+       tkinter
+       csv
+       openpyxl
+       datetime
+       zoneinfo
+
+    Methods:
+        read_stock_file()
+        getChange()
+        getPercentChange()
+        getLastRow()
+        createSheets()
+        createColumnNames()
+        formatHeader()
+        isMarketOpen()
+        getMarketOpenHours()
+        hasScriptBeenRunToday()
+        openExcelFile()
+        checkStocks()
+        main()
 
     To Do: 
     1) Add UI to add/remove stocks?
@@ -11,20 +36,24 @@ get the closing price.  It will then save the data to an Excel spreadsheet.
 
 import yfinance as yf
 from tkinter import messagebox
-from datetime import datetime, timezone
-from zoneinfo import ZoneInfo
 import csv
 import openpyxl
 from openpyxl import Workbook
-from openpyxl.styles import PatternFill
-from openpyxl.styles import Font
-from openpyxl.styles import Alignment
+from openpyxl.styles import PatternFill, Font, Alignment
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
+
 
 # Global Variables
 myStocks = []
 myFile = 'myStocks.xlsx'
 
-# Get list of stocks from external .csv file stocktickers.csv
+# readStockFile()- Get list of stocks from external .csv file stocktickers.csv
+# Requires:
+#   file- 'stockticker.csv'.  A .csv file with company ticker, name
+#
+# Returns:
+#
 def readStockFile():
     try:
         with open('stocktickers.csv', 'r') as read_obj:
@@ -37,17 +66,38 @@ def readStockFile():
     except:
         print('Something went wrong with accessing file stocktickers.csv')
 
-# Calculate the difference between today's price and yesterday's price
+# getChange()- Calculate the difference between the previous closing price and today's closing price
+# Requires:
+#   curPrice- Today's closing price
+#   oldPrice- Previous closing price
+#
+# Returns:
+#   change- Float of the change in price
+#
 def getChange(curPrice, oldPrice):
     change = float(curPrice - oldPrice)
     return change
 
-# Calulate the pecent change from today's price and yesterday's price
+# getPercentChange()- Calculate the percentage change between the previous closing price and today's closing price
+# Requires:
+#   curPrice- Today's closing price
+#   oldPrice- Previous closing price
+#
+# Returns:
+#   pchange- Float of teh change in price
+#
 def getPercentChange(curPrice, oldPrice):
     pchange = float(((curPrice - oldPrice) / oldPrice) * 100)
     return pchange
 
-# Get the index of the first empty row for each sheet in workbook for the Excel file
+# getLastRow()- Get index of the first empty row for each sheet in workbook for the Excel file
+#
+# Requires:
+#   sheet- the Workbook object
+#
+# Returns:
+#   index of the last row of the workbook (plus 1, the first empty row)
+#
 def getLastRow(sheet):
     last_row = sheet.max_row
     last_col = sheet.max_column
@@ -59,7 +109,13 @@ def getLastRow(sheet):
                 last_col -= 1 
     return last_row+1
 
-# Using myStocks, create a sheet for each stock symbol
+# createSheets()- Using the list of stock tickers in myStocks, create a sheet for each stock
+#
+# Requires: 
+#   wb_obj- The Excel workbook object
+#
+# Returns:
+#
 def createSheets(wb_obj):
     # Create the sheets
     for stocks in myStocks:
@@ -69,7 +125,13 @@ def createSheets(wb_obj):
         else:
             sheet = wb_obj.create_sheet(title=stocks)
 
-# Create the column titles I want and format them
+# createColumnNames()- Create the column names for each sheet in the Excel workbook
+#
+# Requires: 
+#   wb_obj- The Excel workbook object
+#
+# Returns:
+#
 def createColumnNames(wb_obj):
     # Create the column names in each sheet and set their width
     sheetNames = wb_obj.sheetnames
@@ -88,7 +150,13 @@ def createColumnNames(wb_obj):
         sheet['F1'] = '% Change'
         sheet.column_dimensions['F'].width = 12
 
-# Format the column headers
+# formatHeader()- Format the first row on (column header) for each sheet in the Excel workbook
+#
+# Requires: 
+#   wb_obj- The Excel workbook object
+#
+# Returns:
+#
 def formatHeader(wb_obj):
     # Format the top row on each sheet
     lightGrey = 'CCCCCCCC'
@@ -102,7 +170,14 @@ def formatHeader(wb_obj):
                 cell.font = Font(bold = True)
                 cell.alignment = Alignment(horizontal = 'center')
 
-# Check to see if the NYSE/NASDAQ is open or closed. Script only run if NYSE/NASDAQ is closed
+# isMarketOpen()- Check to see if the NYSE/NASDAQ is open or closed. Script will only run if NYSE/NASDAQ is closed
+#               so that I am only dealing with the final closing price.  Script also will not execute on weekends
+#               when the stock markets are closed to trading.
+#
+# Requires:
+#
+# Returns:
+#   Boolean or String-  If markets are open return True.  If closed return False.  If it is the weekend return string 'weekend'
 def isMarketOpen():
     utcnow = datetime.now(timezone.utc)
     nytz = ZoneInfo('America/New_York')
@@ -117,8 +192,13 @@ def isMarketOpen():
     else:
         return 'weekend'
 
-# Get the hours the NYSE and NASDAQ are open and return 
-# a list with time_open, time_close and timezone strings for user's local timezone
+# getMarketOpenHours()- Get the hours the NYSE and NASDAQ are open and return a list with time_open, time_close
+#               and timezone strings for user's local timezone
+# 
+# Required: 
+#
+# Returns:
+#   List of strings with the market open time, market close time and timezone for the local timezone
 def getMarketOpenHours():
     utc_time = datetime.now(timezone.utc)
     utc_start = utc_time.replace(hour=13, minute=30, second=0, microsecond=0)
@@ -128,7 +208,12 @@ def getMarketOpenHours():
     local_end = utc_end.astimezone(localTZ)
     return [local_start.strftime('%I:%M %p'), local_end.strftime('%I:%M %p'), localTZ]
 
-# Check to see if script was already run.  Looks for last date in excel workbook.
+# hasScriptBeenRunToday()- Check to see if script was already run.  Looks for last date in excel workbook.
+#
+# Requires:
+#
+# Returns: 
+#   Boolean
 def hasScriptBeenRunToday():
     try:
         workbook = openpyxl.load_workbook(myFile)
@@ -146,7 +231,12 @@ def hasScriptBeenRunToday():
     except:
         print(e)
 
-# Create/Open the Excel file, format it if new, then return the workbook object
+# openExcelFile()- Create/Open the Excel file, format it if new, then return the workbook object
+#
+# Requires:
+#
+# Returns:
+#   Excel wookbook object
 def openExcelFile():
     # Create/open xlsx file for storing data
     try:
@@ -164,7 +254,14 @@ def openExcelFile():
     
     return wb_obj
 
-# Using myStocks, get stock data on each stock and write it out to file
+# checkStocks()- Using list myStocks and yfinance, get stock data on each stock and write it out to file
+#
+# Requires:
+#   wb_obj- Excel workbook object
+#   datestr- A date string formatted to %Y-%m-%d, the date format required by yfinance
+#
+# Returns:
+#
 def checkStocks(wb_obj, datestr):
     for stocks in myStocks:
         ticker = yf.Ticker(stocks).info
@@ -193,6 +290,12 @@ def checkStocks(wb_obj, datestr):
         cell = sheet['F'+ str(lastRow)]
         cell.number_format = '0.00'
 
+# main()- Self explanitory
+#
+# Requires:
+#
+# Returns:
+#
 def main():
     # Get current date string formatted my way in user's timezone
     datestr = datetime.now().strftime('%Y-%m-%d')
