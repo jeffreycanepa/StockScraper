@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import pandas as pd
+import seaborn as sns; sns.set()
 import yfinance as yf
 from datetime import datetime, date, timedelta
 from tkinter import *
@@ -40,11 +41,12 @@ def get_numdays():
 #   a list containing start/end dates for yfinance lookup and for matplotlib labels
 #
 def get_dates(numdays):
-    # Date must be in the format ("%Y-%m-%d") That is, year-month-day
     now = datetime.now()
     then = now - timedelta(numdays)
+    # yfinance dates must be in the format ("%Y-%m-%d") That is, year-month-day
     yfinance_start_date = (now - timedelta(days=numdays)).strftime('%Y-%m-%d')
-    yfinance_end_date = now.strftime('%Y-%m-%d')
+    yfinance_end_date = (now + timedelta(days=1)).strftime('%Y-%m-%d')
+    # date strings I use in the UI are in format ("%b %d, %Y")
     start_date = (now - timedelta(days=numdays)).strftime('%b %d, %Y')
     end_date = now.strftime('%b %d, %Y')
     return [now, then, yfinance_start_date, yfinance_end_date, start_date, end_date] 
@@ -118,7 +120,7 @@ def get_selected_companies():
         cbuts.append(Checkbutton(frame, text=item, anchor='w', width=50, variable=btvars[index], onvalue=1, offvalue=0, command=tline))
         cbuts[index].pack()
     Checkbutton(frame2, text='Select All', anchor='w', width=15, variable=cb, onvalue=1, offvalue=0, command=select_deselect_all).pack()
-    Checkbutton(frame2, text='Display Trendline', anchor='w', width=15, variable=tline, onvalue=1, offvalue=0, command=showline).pack()
+    # Checkbutton(frame2, text='Display Trendline', anchor='w', width=15, variable=tline, onvalue=1, offvalue=0, command=showline).pack()
     Button(cwindow, text='Enter', command=lambda:[set_selected_companies(), cwindow.destroy()]).pack()
 
     # Quit window/app if user closes dialog using the window's close widget.  Using sys.exit.
@@ -171,40 +173,28 @@ def get_data(item):
     stockData.name = item[0]
     return stockData
 
-def main():
-    global dates
-    # Get number of days to look up stock data for
-    numdays = get_numdays()
-    # numdays = askinteger('Enter Number of Days', 'How many day\'s data do you want?', 
-                                    #   initialvalue=365, minvalue=2, maxvalue=10000)
-
-    dates = get_dates(numdays)
-
-    # Get tickers and company names from csv file
-    read_stock_file()
-
-    # Get selection of companies from user
-    get_selected_companies()
-
-    # Fetch the stock data from yfinance
-    get_company_data()
-
-    # now = datetime.now()
-    then = dates[0] - (timedelta(days=len(company_data[0])))
-    days = mdates.drange(then,dates[0],timedelta(days=1))
-
+def plot_data():
     mylines = []
     fig, ax = plt.subplots(figsize=(12,7))
-    ax.set_title('My Stocks for past year')
+    sns.set_style('darkgrid')
+    ax.set_title('Closing Prices for past {0} days'.format(numdays))
 
     x = 0
     while x <= len(company_data)-1:
-        line, = ax.plot(days, company_data[x]['Adj Close'], label=company_names[x])
+        line, = ax.plot(company_data[x].index.values, company_data[x]['Adj Close'], label=company_names[x]) #company_data[x].index.values
         mylines.append(line,)
         x += 1
 
+    ax.set(xlabel='Date', ylabel='Stock Price $ (USD)')
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%d/%Y'))
-    ax.xaxis.set_major_locator(mdates.DayLocator(interval=10))
+    numDates = len(company_data[0]['Adj Close'])
+    if numDates <= 30:
+        ax.xaxis.set_minor_locator(mdates.DayLocator())
+    elif numDates > 30 and numDates < 120:
+        ax.xaxis.set_minor_locator(mdates.DayLocator(interval=2))
+    else:
+        ax.xaxis.set_major_locator(mdates.WeekdayLocator(interval=4))
+
     ax.tick_params(axis='x', labelrotation=45)
 
     leg = ax.legend(loc = 'upper left', fancybox=True, shadow=True)
@@ -230,7 +220,27 @@ def main():
     fig.canvas.mpl_connect('pick_event', on_pick)
     plt.show()
 
+def main():
+    # global numdays
+    global dates
+    # Get number of days to look up stock data for
+    numdays = get_numdays()
 
+    # Get start/end dates based on numdays
+    dates = get_dates(numdays)
+
+    # Get tickers and company names from csv file
+    read_stock_file()
+
+    # Get selection of companies from user
+    get_selected_companies()
+
+    # Fetch the stock data from yfinance
+    get_company_data()
+
+    # plot the data
+    plot_data()
+    
 if __name__ == "__main__":
     main()
 
