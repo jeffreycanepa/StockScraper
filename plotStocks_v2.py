@@ -16,10 +16,12 @@
 -       datetime
 -
 -   Methods:
+-       get_numdays()
 -       get_dates()
 -       read_stock_file()
 -       get_selected_companies()
 -       set_selected_companies()
+-       get_company_data()
 -       get_data()
 -       plot_data()
 -       plot_window()
@@ -36,20 +38,23 @@
 -
 -   Jeff Canepa
 -   jeff.canepa@gmail.com
--   Aug 2023
+-   Sep 2023
 --------------------------------------------------------------
 '''
-# Import Stuff
-import yfinance as yf
-import csv
-from tkinter import *
-from tkinter import simpledialog
+
+import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
-import seaborn as sns; sns.set()
 import pandas as pd
-from datetime import datetime, timedelta
+import seaborn as sns; sns.set()
+import yfinance as yf
+from datetime import datetime, date, timedelta
+from tkinter import *
+from tkinter.simpledialog import askinteger
+from tkinter import messagebox
+import csv
 import sys
 
 #Global variables
@@ -60,7 +65,7 @@ company_data = []
 cbuts = []
 selected_companies = []
 # List of lists with seaborn line colors and line styles
-linestyle = []
+linestyles = []
 btvars = []
 numdays = None
 trendline = None
@@ -72,9 +77,7 @@ trendline = None
 #   an integer with the number of days input by user
 #
 def get_numdays():
-    # root = tk.Tk()
-    # root.withdraw()
-    numberofdays = simpledialog.askinteger('Enter Number of Days', 'How many day\'s data do you want?', 
+    numberofdays = askinteger('Enter Number of Days', 'How many day\'s data do you want?', 
                                       initialvalue=365, minvalue=2, maxvalue=10000)
     return numberofdays
 
@@ -85,13 +88,15 @@ def get_numdays():
 #   a list containing start/end dates for yfinance lookup and for matplotlib labels
 #
 def get_dates(numdays):
-    # Date must be in the format ("%Y-%m-%d") That is, year-month-day
     now = datetime.now()
+    then = now - timedelta(numdays)
+    # yfinance dates must be in the format ("%Y-%m-%d") That is, year-month-day
     yfinance_start_date = (now - timedelta(days=numdays)).strftime('%Y-%m-%d')
-    yfinance_end_date = now.strftime('%Y-%m-%d')
+    yfinance_end_date = (now + timedelta(days=1)).strftime('%Y-%m-%d')
+    # date strings I use in the UI are in format ("%b %d, %Y")
     start_date = (now - timedelta(days=numdays)).strftime('%b %d, %Y')
     end_date = now.strftime('%b %d, %Y')
-    return [yfinance_start_date, yfinance_end_date, start_date, end_date] 
+    return [now, then, yfinance_start_date, yfinance_end_date, start_date, end_date] 
 
 # read_stock_file()- Get stock tickers and company name data from file stocktickers.csv
 # Requires:
@@ -110,7 +115,7 @@ def read_stock_file():
         for cticker, cname, ccolor, cstyle in companies:
             tickers.append(cticker)
             company_names.append(cname) 
-            linestyle.append([ccolor, cstyle])
+            linestyles.append([ccolor, cstyle])
     except FileNotFoundError as e:
         print(e)
     except:
@@ -127,7 +132,7 @@ def read_stock_file():
 def get_selected_companies():
     cwindow = Tk()
     cwindow.title('Select Companies')
-    cwindow.geometry('200x410+10+10')
+    cwindow.geometry('200x380+10+10')
     # cwindow.eval(f'tk::PlaceWindow {cwindow._w} center')
     tline = IntVar()
     cb = IntVar()
@@ -137,7 +142,7 @@ def get_selected_companies():
     frame.pack(padx=10, pady=10) #pady=20, padx=10
 
      # Create a frame for checkboxes
-    frame2 = Frame(cwindow, padx=5, pady=5)
+    frame2 = Frame(cwindow, padx=8) #, pady=5
     frame2.pack(padx=10)
 
     # Add method to select/deselect all checkboxes
@@ -161,8 +166,8 @@ def get_selected_companies():
     for index, item in enumerate(company_names):
         cbuts.append(Checkbutton(frame, text=item, anchor='w', width=50, variable=btvars[index], onvalue=1, offvalue=0, command=tline))
         cbuts[index].pack()
-    Checkbutton(frame2, text='Select All', anchor='w', width=15, variable=cb, onvalue=1, offvalue=0, command=select_deselect_all).pack()
-    Checkbutton(frame2, text='Display Trendline', anchor='w', width=15, variable=tline, onvalue=1, offvalue=0, command=showline).pack()
+    Checkbutton(frame2, text='Select All', anchor='w', width=50, variable=cb, onvalue=1, offvalue=0, command=select_deselect_all).pack()
+    # Checkbutton(frame2, text='Display Trendline', anchor='w', width=15, variable=tline, onvalue=1, offvalue=0, command=showline).pack()
     Button(cwindow, text='Enter', command=lambda:[set_selected_companies(), cwindow.destroy()]).pack()
 
     # Quit window/app if user closes dialog using the window's close widget.  Using sys.exit.
@@ -189,7 +194,7 @@ def set_selected_companies():
         if btvars[index].get() == 1:
             selected_companies.append([item,tickers[index]])
 
-# get_company_data()- Using selected_companies(), get stock data and store results in list company
+# get_company_data()- Using selected_companies(), get stock data and store results in list company_data
 #
 # Required:
 #   selected_companies
@@ -200,59 +205,80 @@ def get_company_data():
     for item in (selected_companies):
         company_data.append(get_data(item))
 
-# get_data()- Get stock data.
+# get_data()- Using yfinance, get stock data for provided stock ticker.
 # Requires: 
-#   symbol- a list of strings that are stock symbols (tickers) 
-#   cname- a list of strings with comany names
+#   item- the stock ticker to fetch data for 
+#
 # Returns:
 #   stockData- object containing stock data for past year for the provided symbol
 #
 def get_data(item):
     global dates
     stockData = yf.download(tickers = item[1],
-                         start= dates[0],
-                         end= dates[1])
+                         start= dates[2],
+                         end= dates[3])
     stockData.name = item[0]
     return stockData
 
 # plot_data()- Plot stock data using Matplotlib and add it to Tkinter window
 # Requires:
 #   company-  a list of company objects containing stock data
-#   linestyle-   a list of strings that are linestyle used by Matplotlib
+#   linestyles-   a list of lists with strings that represent line color and style
 #   window-   a tkinter window 
 # Returns:
 #
-def plot_data(company, linestyle, window):
-    # Create plot using matplotlib
-    fig = plt.figure(figsize=(13, 7))
+def plot_data(company, linestyles, window):
+    mylines = []
+    fig, ax = plt.subplots(figsize=(13,7))
     sns.set_style('darkgrid')
-    
-    # convert the regression line start date to ordinal
-    x1 = pd.to_datetime(dates[0]).toordinal()
+    ax.set_title('Closing Prices', fontsize=20)
 
-    for cmp, lstyle in zip(company,linestyle):
-        # convert the datetime index to ordinal values, which can be used to plot a regression line
-        cmp.index = cmp.index.map(pd.Timestamp.toordinal)
-        data=cmp.loc[x1:].reset_index()
+    # Get plot lines for all selected stocks
+    x = 0
+    while x <= len(company)-1:
+        print('Company Data:', company[x])
+        line, = ax.plot(company[x].index.values, company[x]['Adj Close'], label=company_names[x], color=linestyles[x][0], linestyle=linestyles[x][1])
+        mylines.append(line,)
+        x += 1
 
-        # Add Closing price for stock as a line and as a linear regression (trend line)
-        ax1 = sns.lineplot(data=cmp,x=cmp.index,y="Close",color=lstyle[0],linestyle=lstyle[1], label=cmp.name)
-        
-        # If user checked to show trendline, then add trendline to the plot
-        if trendline == 1:
-            sns.regplot(data=data, x=cmp.index, y='Close', color=lstyle[0], scatter=False, ci=False)
+    # Format the x and y tickers and labels
+    ax.set(ylabel='Stock Price (USD)')
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%d/%Y'))
+    ax.yaxis.set_major_formatter('${x:1.0f}')
+    ax.tick_params(axis='x', labelrotation=45)
+    ax.tick_params(axis='both', labelsize=9)
 
-        ax1.set_xlim(cmp.index[0], cmp.index[-1])
+    # Adjust the number of tickers depending on number of days worth of
+    # stock data there is to plot
+    numDates = len(company[0]['Adj Close'])
+    if numDates <= 30:
+        ax.xaxis.set_minor_locator(mdates.DayLocator())
+    elif numDates > 30 and numDates < 120:
+        ax.xaxis.set_minor_locator(mdates.DayLocator(interval=2))
+    else:
+        ax.xaxis.set_major_locator(mdates.WeekdayLocator(interval=4))
 
-        # convert the axis back to datetime
-        xticks = ax1.get_xticks()
-        labels = [pd.Timestamp.fromordinal(int(label)).date() for label in xticks]
-        ax1.set_xticks(xticks)
-        ax1.set_xticklabels(labels)
+    # Map legend lines to plot lines
+    leg = ax.legend(loc = 'upper center', fancybox=True, framealpha=0.5, ncols=3, title='Click on marker to hide/show plot line')
+    lined = {}
+    for legline, origline in zip(leg.get_lines(), mylines):
+        legline.set_picker(True)  # Enable picking on the legend line.
+        legline.set_picker(5)
+        lined[legline] = origline
 
-    sns.despine()
-    plt.title('Closing Prices\n{0} - {1}'.format(dates[2], dates[3]), size='x-large', color='black')
-    plt.ylabel('Stock Price $ (USD)')
+    # On the pick event, find the original line corresponding to the legend
+    # proxy line, and toggle its visibility.
+    def on_pick(event):
+        legline = event.artist
+        origline = lined[legline]
+        visible = not origline.get_visible()
+        origline.set_visible(visible)
+        # Change the alpha on the line in the legend, so we can see what lines
+        # have been toggled.
+        legline.set_alpha(1.0 if visible else 0.2)
+        fig.canvas.draw()
+
+    fig.canvas.mpl_connect('pick_event', on_pick)
     
     # Create canvas and add it to Tkinter window
     canvas = FigureCanvasTkAgg(fig, master=window)
@@ -270,7 +296,6 @@ def plot_data(company, linestyle, window):
 #               quits the app.
 #
 # Required:
-#   numdays
 #
 # Returns:
 #
@@ -287,19 +312,20 @@ def plot_window():
     plotWindow.protocol('WM_DELETE_WINDOW', on_closing)
 
     # Using Matplotlib display company stock data
-    plot_data(company_data, linestyle, plotWindow)
+    plot_data(company_data, linestyles, plotWindow)
 
     # Add a button to quit when done viewing the plot data
     bt_1 = Button(plotWindow, text='Quit', command=plotWindow.quit).pack()
 
     plotWindow.mainloop() 
 
-# main()
 def main():
+    global numdays
     global dates
-
     # Get number of days to look up stock data for
     numdays = get_numdays()
+
+    # Get start/end dates based on numdays
     dates = get_dates(numdays)
 
     # Get tickers and company names from csv file
@@ -311,8 +337,8 @@ def main():
     # Fetch the stock data from yfinance
     get_company_data()
 
-    # Plot the stock data and display
+    # Create window to display data in, plot the data, then display the data
     plot_window()
-
+    
 if __name__ == "__main__":
     main()
