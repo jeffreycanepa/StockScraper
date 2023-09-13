@@ -7,10 +7,14 @@ my_w.title("www.plus2net.com")  #  title
 
 def my_check(*args):
     my_flag=False
-    if(len(e1.get()) <3 ):my_flag=True # Minimum 3 char for entry
-    if(c1_v1.get() != 'Yes'):my_flag=True # Check box is not checked   
-    if my_flag != True:b1.config(state='normal',bg='lightgreen')    
-    else:b1.config(state='disabled',bg='lightyellow')
+    if(len(e1.get()) <3 ):
+        my_flag=True # Minimum 3 char for entry
+    if(c1_v1.get() != 'Yes'):
+        my_flag=True # Check box is not checked   
+    if my_flag != True:
+        b1.config(state='normal',bg='lightgreen')    
+    else:
+        b1.config(state='disabled',bg='lightyellow')
 l1=tk.Label(my_w,text='Name',font=20)
 l1.grid(row=0,column=0,padx=10,pady=10)
 str1=tk.StringVar()

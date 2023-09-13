@@ -1,4 +1,0 @@
-1) Add widget to allow/disallow trend line to plotStocks_v2 (already in v1)
-2) Script to add/remove stocks from stocktickers.csv
-3) Add UI to plotStocks_v2 to add/remove stocks?
-4) Dynamically size the Pick Stocks dialog

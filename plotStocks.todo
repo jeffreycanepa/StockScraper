@@ -1,0 +1,68 @@
+{
+  "todotree": {
+    "tree": [
+      {
+        "key": 1694644339297,
+        "children": [],
+        "todo": {
+          "content": "Dynamically size the Pick Stocks dialog",
+          "id": 1694644339297,
+          "level": "danger",
+          "done": false,
+          "start": 1694644339297,
+          "fileLink": "plotStocks_v2.py"
+        }
+      },
+      {
+        "key": 1694644391748,
+        "children": [],
+        "todo": {
+          "content": "Add widget to allow/disallow trend line to plotStocks_v2 (already in v1)",
+          "id": 1694644391748,
+          "level": "warning",
+          "done": false,
+          "start": 1694644391748,
+          "fileLink": "plotStocks_v2.py"
+        }
+      },
+      {
+        "key": 1694644529309,
+        "children": [],
+        "todo": {
+          "content": "Script to add/remove stocks from stocktickers.csv",
+          "id": 1694644529309,
+          "level": "default",
+          "done": false,
+          "start": 1694644529309,
+          "fileLink": "stocktickers.csv"
+        }
+      },
+      {
+        "key": 1694644591887,
+        "children": [],
+        "todo": {
+          "content": "Add UI to plotStocks_v2 to add/remove stocks?",
+          "id": 1694644591887,
+          "level": "secondary",
+          "done": false,
+          "start": 1694644591887,
+          "tip": "May be redundent if I have script to add/remove items to stocktickers.csv.  Perhaps explore ability to have user input all stocks to lookup in a given session and make the app more of a general purpose stock lookup tool."
+        }
+      }
+    ],
+    "expandKeys": [
+      1694644339297
+    ],
+    "schema": "https://github.com/Saber2pr/vsc-ext-todolist/blob/master/src/api/type.ts#L3",
+    "add_mode": "bottom",
+    "virtual": false,
+    "showLine": false,
+    "playFontSize": 24,
+    "title": "plotStocks",
+    "autoSort": false,
+    "showEndTime": false,
+    "simpleMode": false,
+    "lang": "en",
+    "version": "1694644807845"
+  }
+}
