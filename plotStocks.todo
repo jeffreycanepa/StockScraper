@@ -8,9 +8,11 @@
           "content": "Dynamically size the Pick Stocks dialog",
           "id": 1694644339297,
           "level": "danger",
-          "done": false,
+          "done": true,
           "start": 1694644339297,
-          "fileLink": "plotStocks_v2.py"
+          "fileLink": "plotStocks_v2.py",
+          "focus": false,
+          "end": 1694645217245
         }
       },
       {
@@ -63,6 +65,6 @@
     "showEndTime": false,
     "simpleMode": false,
     "lang": "en",
-    "version": "1694644807845"
+    "version": "1694645217288"
   }
 }
