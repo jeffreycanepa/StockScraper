@@ -57,9 +57,9 @@ def getselecteCompanies(company_names):
         cbuts.append(tk.Checkbutton(frame, text=item, anchor='w', width=50, variable=btvars[index], onvalue=1, offvalue=0, command=tline))
         cbuts[index].pack()
     tk.Checkbutton(frame2, text='Select All', anchor='w', width=15, variable=cb, onvalue=1, offvalue=0, command=select_all).pack()
-    tk.Checkbutton(frame2, text='Display Trendline', anchor='w', width=15, variable=tline, onvalue=1, offvalue=0, command=showline).pack()
+    # tk.Checkbutton(frame2, text='Display Trendline', anchor='w', width=15, variable=tline, onvalue=1, offvalue=0, command=showline).pack()
     tk.Button(window, text='Enter', command=lambda:[setSelectedCompanies(), window.destroy()]).pack()
-                
+    print(frame.winfo_children())            
     window.mainloop()
 
 def setSelectedCompanies():
@@ -70,7 +70,7 @@ def setSelectedCompanies():
 def main():
     getselecteCompanies(company_names)
     # print(selectedCompanies)
-    print(tl)
+    # print(tl)
 
 if __name__ == "__main__":
     main()
