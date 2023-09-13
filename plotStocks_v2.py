@@ -160,7 +160,7 @@ def get_selected_companies():
             trendline = 1
 
     # array of the button values
-    for x in range(11):
+    for x in range(len(company_names)):
         btvars.append(IntVar())
 
     for index, item in enumerate(company_names):
@@ -236,7 +236,6 @@ def plot_data(company, linestyles, window):
     # Get plot lines for all selected stocks
     x = 0
     while x <= len(company)-1:
-        print('Company Data:', company[x])
         line, = ax.plot(company[x].index.values, company[x]['Adj Close'], label=company_names[x], color=linestyles[x][0], linestyle=linestyles[x][1])
         mylines.append(line,)
         x += 1
