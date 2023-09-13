@@ -1,0 +1,4 @@
+getStocks.py:
+    1) when adding a stock to stocktickers.csv, get an error since there is
+        no workbook for the new stock(s).  Need to add logic to fix this.
+
