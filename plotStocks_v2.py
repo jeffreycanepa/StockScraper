@@ -132,7 +132,7 @@ def read_stock_file():
 def get_selected_companies():
     cwindow = Tk()
     cwindow.title('Select Companies')
-    cwindow.geometry('200x380+10+10')
+    cwindow.geometry('200x400+200+10')
     # cwindow.eval(f'tk::PlaceWindow {cwindow._w} center')
     tline = IntVar()
     cb = IntVar()
@@ -302,7 +302,7 @@ def plot_window():
     # Create the window
     plotWindow = Tk()
     plotWindow.title('Past ' + str(numdays) + ' Days')
-    plotWindow.geometry('1000x770')
+    plotWindow.geometry('1000x770+200+10')
 
     # Quit window/app if user closes dialog using the window's close widget
     def on_closing():
