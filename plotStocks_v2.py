@@ -19,6 +19,7 @@
 -       get_numdays()
 -       get_dates()
 -       read_stock_file()
+-       get_select_company_winsize()
 -       get_selected_companies()
 -       set_selected_companies()
 -       get_company_data()
@@ -121,6 +122,15 @@ def read_stock_file():
     except:
         print('Something went wrong with accessing file stocktickers.csv')
 
+# get_select_company_winsize()- Set the height of the Select Companies dialog based on 
+#                               number of companies listed in company_names
+#
+# Requires:
+#   company_names- a list of the strings that are Company Names
+#
+# Returns:
+#   string of the window dimensions to use for dialog Select Companies
+#
 def get_select_company_winsize():
     winHeight = 120 + (len(company_names) * 23)
     winGeometry = '200x{}+200+40'
