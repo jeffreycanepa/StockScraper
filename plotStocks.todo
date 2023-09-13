@@ -25,7 +25,10 @@
           "level": "warning",
           "done": false,
           "start": 1694644391748,
-          "fileLink": "plotStocks_v2.py"
+          "fileLink": "plotStocks_v2.py",
+          "tags": [
+            "1694645393318"
+          ]
         }
       },
       {
@@ -37,7 +40,10 @@
           "level": "default",
           "done": false,
           "start": 1694644529309,
-          "fileLink": "stocktickers.csv"
+          "fileLink": "stocktickers.csv",
+          "tags": [
+            "1694645393318"
+          ]
         }
       },
       {
@@ -49,7 +55,10 @@
           "level": "secondary",
           "done": false,
           "start": 1694644591887,
-          "tip": "May be redundent if I have script to add/remove items to stocktickers.csv.  Perhaps explore ability to have user input all stocks to lookup in a given session and make the app more of a general purpose stock lookup tool."
+          "tip": "May be redundent if I have script to add/remove items to stocktickers.csv.  Perhaps explore ability to have user input all stocks to lookup in a given session and make the app more of a general purpose stock lookup tool.",
+          "tags": [
+            "1694645662024"
+          ]
         }
       },
       {
@@ -93,6 +102,12 @@
         "color": "#ff0000",
         "fontColor": "#000000",
         "level": 0
+      },
+      "1694645662024": {
+        "label": "Investigation",
+        "color": "#ffff00",
+        "fontColor": "#000000",
+        "level": 0
       }
     },
     "title": "plotStocks",
@@ -100,6 +115,6 @@
     "showEndTime": false,
     "simpleMode": false,
     "lang": "en",
-    "version": "1694645550767"
+    "version": "1694645785558"
   }
 }
