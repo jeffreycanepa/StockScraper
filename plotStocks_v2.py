@@ -121,6 +121,11 @@ def read_stock_file():
     except:
         print('Something went wrong with accessing file stocktickers.csv')
 
+def get_select_company_winsize():
+    winHeight = 120 + (len(company_names) * 23)
+    winGeometry = '200x{}+200+40'
+    return winGeometry.format(winHeight)
+
 # get_selected_companies()- Ask user to select the stocks to lookup data for
 #
 # Requires:
@@ -130,9 +135,10 @@ def read_stock_file():
 #   Returns:
 #
 def get_selected_companies():
+    winsize = get_select_company_winsize()
     cwindow = Tk()
     cwindow.title('Select Companies')
-    cwindow.geometry('200x400+200+10')
+    cwindow.geometry(winsize)
     # cwindow.eval(f'tk::PlaceWindow {cwindow._w} center')
     tline = IntVar()
     cb = IntVar()
