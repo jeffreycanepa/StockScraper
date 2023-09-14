@@ -45,7 +45,7 @@ def read_stock_file():
     global company_names
     global linestyle
     try:
-        with open('stocktickers.csv', 'r') as read_obj:
+        with open('../stocktickers.csv', 'r') as read_obj:
             csv_reader = csv.reader(read_obj)
             companies = list(csv_reader)
         for cticker, cname, ccolor, cstyle in companies:
@@ -87,7 +87,7 @@ def get_selected_companies():
             trendline = 1
 
     # array of the button values
-    for x in range(11):
+    for x in range(len(company_names)):
         btvars.append(IntVar())
 
     for index, item in enumerate(company_names):
