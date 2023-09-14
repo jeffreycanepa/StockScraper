@@ -8,12 +8,14 @@
           "content": "Add code to disable Stock Picker dialog enter button until at least one stock is selected",
           "id": 1694645298162,
           "level": "warning",
-          "done": false,
+          "done": true,
           "start": 1694645298162,
           "fileLink": "plotStocks_v2.py",
           "tags": [
             "1694645419028"
-          ]
+          ],
+          "focus": false,
+          "end": 1694651849663
         }
       },
       {
@@ -115,6 +117,6 @@
     "showEndTime": false,
     "simpleMode": false,
     "lang": "en",
-    "version": "1694645785558"
+    "version": "1694651849707"
   }
 }
