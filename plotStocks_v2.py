@@ -243,6 +243,8 @@ def get_company_data():
 #
 def get_data(item):
     global dates
+    # Pseudo status
+    print('Fetching data for', item[0], '...')
     stockData = yf.download(tickers = item[1],
                          start= dates[2],
                          end= dates[3])
