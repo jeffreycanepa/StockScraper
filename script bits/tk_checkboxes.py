@@ -35,13 +35,17 @@ def getselecteCompanies(company_names):
     tline = tk.IntVar()
     cb = tk.IntVar()
 
-    # Create a LabelFrame
-    frame =tk.LabelFrame(window, text="Select Companies", padx=5, pady=5)
-    frame.pack(padx=10, pady=10)
-
-    # Create a frame for checkboxes
-    frame2 = tk.Frame(window, padx=17)
-    frame2.pack()
+    # Method to validate is any checkbuttons are checked. If they are, then enable the enter button.
+    def is_checkbox_checked():
+        my_flag=False
+        # ischecked = False
+        for index, item in enumerate(company_names):
+            if btvars[index].get() == 1:
+                my_flag = True               
+        if my_flag == True:
+            bt1.config(state='normal')
+        else:
+            bt1.config(state='disabled')
 
     # Add method to select all checkboxes
     def select_all():
@@ -57,16 +61,28 @@ def getselecteCompanies(company_names):
         if tline.get() == 1:
             tl = 1
 
-    # array of the button values
+    # Create a LabelFrame
+    frame =tk.LabelFrame(window, text="Select Companies", padx=5, pady=5)
+    frame.pack(padx=10, pady=10)
+
+    # Create a frame for checkboxes
+    frame2 = tk.Frame(window, padx=17)
+    frame2.pack()
+
+    # Create Enter button
+    bt1 = tk.Button(window, text='Enter', state='disabled', command=lambda:[setSelectedCompanies(), window.destroy()])
+
+    # Array of the checkbutton values
     for x in range(len(company_names)):
         btvars.append(tk.IntVar())
 
     for index, item in enumerate(company_names):
-        cbuts.append(tk.Checkbutton(frame, text=item, anchor='w', width=50, variable=btvars[index], onvalue=1, offvalue=0, command=tline))
+        cbuts.append(tk.Checkbutton(frame, text=item, anchor='w', width=50, variable=btvars[index], onvalue=1, offvalue=0, command=is_checkbox_checked))
         cbuts[index].pack()
-    tk.Checkbutton(frame2, text='Select All', anchor='w', width=50, variable=cb, onvalue=1, offvalue=0, command=select_all).pack()
+    tk.Checkbutton(frame2, text='Select All', anchor='w', width=50, variable=cb, onvalue=1, offvalue=0, command=lambda:[select_all(),is_checkbox_checked()]).pack()
     # tk.Checkbutton(frame2, text='Display Trendline', anchor='w', width=15, variable=tline, onvalue=1, offvalue=0, command=showline).pack()
-    tk.Button(window, text='Enter', command=lambda:[setSelectedCompanies(), window.destroy()]).pack()
+    bt1.pack()
+    
     window.mainloop()
 
 def setSelectedCompanies():
@@ -76,7 +92,7 @@ def setSelectedCompanies():
 
 def main():
     getselecteCompanies(company_names)
-    # print(selectedCompanies)
+    print(selectedCompanies)
     # print(tl)
 
 if __name__ == "__main__":
