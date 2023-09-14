@@ -153,15 +153,19 @@ def get_selected_companies():
     tline = IntVar()
     cb = IntVar()
 
-    # Create a LabelFrame
-    frame =LabelFrame(cwindow, text="Select the Companies", padx=5, pady=5) #, padx=10, pady=5
-    frame.pack(padx=10, pady=10) #pady=20, padx=10
+    # Method to validate is any checkbuttons are checked. If they are, then enable the enter button.
+    def is_checkbox_checked():
+        my_flag=False
+        # ischecked = False
+        for index, item in enumerate(company_names):
+            if btvars[index].get() == 1:
+                my_flag = True               
+        if my_flag == True:
+            bt1.config(state='normal')
+        else:
+            bt1.config(state='disabled')
 
-     # Create a frame for checkboxes
-    frame2 = Frame(cwindow, padx=8) #, pady=5
-    frame2.pack(padx=10)
-
-    # Add method to select/deselect all checkboxes
+    # Method to select/deselect all checkboxes
     def select_deselect_all():
         if cb.get() == 1:
             for i in cbuts:
@@ -170,21 +174,33 @@ def get_selected_companies():
             for i in cbuts:
                 i.deselect()
 
+    # Method to set trendline to 1 if the checkbutton in the Select Stocks dialog is checked
     def showline():
         global trendline
         if tline.get() == 1:
             trendline = 1
+    
+    # Create a LabelFrame
+    frame =LabelFrame(cwindow, text="Select the Companies", padx=5, pady=5) #, padx=10, pady=5
+    frame.pack(padx=10, pady=10) #pady=20, padx=10
 
+     # Create a frame for checkboxes
+    frame2 = Frame(cwindow, padx=8) #, pady=5
+    frame2.pack(padx=10)
+
+     # Create Enter button
+    bt1 = Button(cwindow, text='Enter', state='disabled', command=lambda:[set_selected_companies(), cwindow.destroy()])
+    
     # array of the button values
     for x in range(len(company_names)):
         btvars.append(IntVar())
 
     for index, item in enumerate(company_names):
-        cbuts.append(Checkbutton(frame, text=item, anchor='w', width=50, variable=btvars[index], onvalue=1, offvalue=0, command=tline))
+        cbuts.append(Checkbutton(frame, text=item, anchor='w', width=50, variable=btvars[index], onvalue=1, offvalue=0, command=is_checkbox_checked))
         cbuts[index].pack()
-    Checkbutton(frame2, text='Select All', anchor='w', width=50, variable=cb, onvalue=1, offvalue=0, command=select_deselect_all).pack()
+    Checkbutton(frame2, text='Select All', anchor='w', width=50, variable=cb, onvalue=1, offvalue=0, command=lambda:[select_deselect_all(),is_checkbox_checked()]).pack()
     # Checkbutton(frame2, text='Display Trendline', anchor='w', width=15, variable=tline, onvalue=1, offvalue=0, command=showline).pack()
-    Button(cwindow, text='Enter', command=lambda:[set_selected_companies(), cwindow.destroy()]).pack()
+    bt1.pack()
 
     # Quit window/app if user closes dialog using the window's close widget.  Using sys.exit.
     def on_closing():
@@ -318,7 +334,7 @@ def plot_window():
     # Create the window
     plotWindow = Tk()
     plotWindow.title('Past ' + str(numdays) + ' Days')
-    plotWindow.geometry('1000x770+200+10')
+    plotWindow.geometry('1000x770+200+40')
 
     # Quit window/app if user closes dialog using the window's close widget
     def on_closing():
