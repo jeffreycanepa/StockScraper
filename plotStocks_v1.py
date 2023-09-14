@@ -18,6 +18,7 @@
 -   Methods:
 -       get_dates()
 -       read_stock_file()
+-       get_select_company_winsize()
 -       get_selected_companies()
 -       set_selected_companies()
 -       get_data()
@@ -116,6 +117,20 @@ def read_stock_file():
     except:
         print('Something went wrong with accessing file stocktickers.csv')
 
+# get_select_company_winsize()- Set the height of the Select Companies dialog based on 
+#                               number of companies listed in company_names
+#
+# Requires:
+#   company_names- a list of the strings that are Company Names
+#
+# Returns:
+#   string of the window dimensions to use for dialog Select Companies
+#
+def get_select_company_winsize():
+    winHeight = 150 + (len(company_names) * 23)
+    winGeometry = '200x{}+200+40'
+    return winGeometry.format(winHeight)
+
 # get_selected_companies()- Ask user to select the stocks to lookup data for
 #
 # Requires:
@@ -125,12 +140,40 @@ def read_stock_file():
 #   Returns:
 #
 def get_selected_companies():
+    winsize = get_select_company_winsize()
     cwindow = Tk()
     cwindow.title('Select Companies')
-    cwindow.geometry('200x410+10+10')
+    cwindow.geometry(winsize)
     # cwindow.eval(f'tk::PlaceWindow {cwindow._w} center')
     tline = IntVar()
     cb = IntVar()
+
+    # Method to validate is any checkbuttons are checked. If they are, then enable the enter button.
+    def is_checkbox_checked():
+        my_flag=False
+        # ischecked = False
+        for index, item in enumerate(company_names):
+            if btvars[index].get() == 1:
+                my_flag = True               
+        if my_flag == True:
+            bt1.config(state='normal')
+        else:
+            bt1.config(state='disabled')
+
+    # Method to select/deselect all checkboxes
+    def select_deselect_all():
+        if cb.get() == 1:
+            for i in cbuts:
+                i.select()
+        else:
+            for i in cbuts:
+                i.deselect()
+
+    # Method to set trendline to 1 if the checkbutton in the Select Stocks dialog is checked
+    def showline():
+        global trendline
+        if tline.get() == 1:
+            trendline = 1
 
     # Create a LabelFrame
     frame =LabelFrame(cwindow, text="Select the Companies", padx=5, pady=5) #, padx=10, pady=5
@@ -140,30 +183,19 @@ def get_selected_companies():
     frame2 = Frame(cwindow, padx=5, pady=5)
     frame2.pack(padx=10)
 
-    # Add method to select/deselect all checkboxes
-    def select_deselect_all():
-        if cb.get() == 1:
-            for i in cbuts:
-                i.select()
-        else:
-            for i in cbuts:
-                i.deselect()
-
-    def showline():
-        global trendline
-        if tline.get() == 1:
-            trendline = 1
+     # Create Enter button
+    bt1 = Button(cwindow, text='Enter', state='disabled', command=lambda:[set_selected_companies(), cwindow.destroy()])
 
     # array of the button values
-    for x in range(11):
+    for x in range(len(company_names)):
         btvars.append(IntVar())
 
     for index, item in enumerate(company_names):
-        cbuts.append(Checkbutton(frame, text=item, anchor='w', width=50, variable=btvars[index], onvalue=1, offvalue=0, command=tline))
+        cbuts.append(Checkbutton(frame, text=item, anchor='w', width=50, variable=btvars[index], onvalue=1, offvalue=0, command=is_checkbox_checked))
         cbuts[index].pack()
-    Checkbutton(frame2, text='Select All', anchor='w', width=15, variable=cb, onvalue=1, offvalue=0, command=select_deselect_all).pack()
+    Checkbutton(frame2, text='Select All', anchor='w', width=15, variable=cb, onvalue=1, offvalue=0, command=lambda:[select_deselect_all(),is_checkbox_checked()]).pack()
     Checkbutton(frame2, text='Display Trendline', anchor='w', width=15, variable=tline, onvalue=1, offvalue=0, command=showline).pack()
-    Button(cwindow, text='Enter', command=lambda:[set_selected_companies(), cwindow.destroy()]).pack()
+    bt1.pack()
 
     # Quit window/app if user closes dialog using the window's close widget.  Using sys.exit.
     def on_closing():
