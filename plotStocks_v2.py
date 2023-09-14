@@ -9,11 +9,11 @@
 -   Requires:
 -       yfinance
 -       csv
--       tkinter
 -       matplotlib
 -       seaborn
--       pandas
 -       datetime
+-       tkinter
+-       sys
 -
 -   Methods:
 -       get_numdays()
@@ -43,19 +43,16 @@
 --------------------------------------------------------------
 '''
 
-import numpy as np
+import yfinance as yf
+import csv
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
-import pandas as pd
 import seaborn as sns; sns.set()
-import yfinance as yf
-from datetime import datetime, date, timedelta
+from datetime import datetime, timedelta
 from tkinter import *
 from tkinter.simpledialog import askinteger
-from tkinter import messagebox
-import csv
 import sys
 
 #Global variables
@@ -192,7 +189,7 @@ def get_selected_companies():
     bt1 = Button(cwindow, text='Enter', state='disabled', command=lambda:[set_selected_companies(), cwindow.destroy()])
     
     # array of the button values
-    for x in range(len(company_names)):
+    for bt in range(len(company_names)):
         btvars.append(IntVar())
 
     for index, item in enumerate(company_names):
@@ -268,7 +265,7 @@ def plot_data(company, linestyles, window):
     # Get plot lines for all selected stocks
     x = 0
     while x <= len(company)-1:
-        line, = ax.plot(company[x].index.values, company[x]['Adj Close'], label=company_names[x], color=linestyles[x][0], linestyle=linestyles[x][1])
+        line, = ax.plot(company[x].index.values, company[x]['Adj Close'], label=selected_companies[x][0], color=linestyles[x][0], linestyle=linestyles[x][1])
         mylines.append(line,)
         x += 1
 
@@ -284,10 +281,12 @@ def plot_data(company, linestyles, window):
     numDates = len(company[0]['Adj Close'])
     if numDates <= 30:
         ax.xaxis.set_minor_locator(mdates.DayLocator())
-    elif numDates > 30 and numDates < 120:
+    elif numDates > 30 and numDates <= 120:
         ax.xaxis.set_minor_locator(mdates.DayLocator(interval=2))
+    elif numDates > 120 and numDates <= 730:
+        ax.xaxis.set_minor_locator(mdates.MonthLocator(interval=1))
     else:
-        ax.xaxis.set_major_locator(mdates.WeekdayLocator(interval=4))
+        ax.xaxis.set_major_locator(mdates.YearLocator())
 
     # Map legend lines to plot lines
     leg = ax.legend(loc = 'upper center', fancybox=True, framealpha=0.5, ncols=3, title='Click on marker to hide/show plot line')
