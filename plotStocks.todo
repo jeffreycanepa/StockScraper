@@ -76,6 +76,20 @@
           "focus": false,
           "end": 1694645217245
         }
+      },
+      {
+        "key": 1694656034401,
+        "children": [],
+        "todo": {
+          "content": "Work on how many ticks are plotted for a given number of days/Months/Years.",
+          "id": 1694656034401,
+          "level": "success",
+          "done": false,
+          "start": 1694656034401,
+          "tags": [
+            "1694645419028"
+          ]
+        }
       }
     ],
     "expandKeys": [
@@ -117,6 +131,6 @@
     "showEndTime": false,
     "simpleMode": false,
     "lang": "en",
-    "version": "1694651849707"
+    "version": "1694656084869"
   }
 }
