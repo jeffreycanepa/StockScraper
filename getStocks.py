@@ -20,6 +20,7 @@ It will also not fetch data on the weekends.
         getPercentChange()
         getLastRow()
         createSheets()
+        addSheet()
         createColumnNames()
         formatHeader()
         isMarketOpen()
@@ -125,6 +126,19 @@ def createSheets(wb_obj):
         else:
             sheet = wb_obj.create_sheet(title=stocks)
 
+# addSheet()- Add new sheet for stock symbol that may be missing from workbook
+#
+# Requires: 
+#   wb_obj- The Excel workbook object
+#   symb-   The stocks symbol
+#
+# Returns:
+#   sheet- workbook sheet
+#           
+def addSheet(wb_obj, symb):
+    sheet = wb_obj.create_sheet(title=symb)
+    return sheet
+
 # createColumnNames()- Create the column names for each sheet in the Excel workbook
 #
 # Requires: 
@@ -138,13 +152,13 @@ def createColumnNames(wb_obj):
     for name in sheetNames:
         sheet = wb_obj[name]
         sheet['A1'] = 'Date'
-        sheet.column_dimensions['A'].width = 10
+        sheet.column_dimensions['A'].width = 12
         sheet['B1'] = 'Ticker'
         sheet.column_dimensions['B'].width = 10
         sheet['C1'] = 'Closing Price'
-        sheet.column_dimensions['C'].width = 12
+        sheet.column_dimensions['C'].width = 15
         sheet['D1'] = 'Previous Close'
-        sheet.column_dimensions['D'].width = 14
+        sheet.column_dimensions['D'].width = 15
         sheet['E1'] = 'Change'
         sheet.column_dimensions['E'].width = 12
         sheet['F1'] = '% Change'
@@ -275,20 +289,36 @@ def checkStocks(wb_obj, datestr):
         previous_close_price = ticker['regularMarketPreviousClose']
         change = getChange(current_price, previous_close_price)
         pctChange = getPercentChange(current_price, previous_close_price)
-        sheet = wb_obj[curr_symbol]
-        lastRow = getLastRow(sheet)
-        sheet['A' + str(lastRow)] = datestr
-        cell = sheet['A' + str(lastRow)]
-        cell.number_format = 'yyyy-mm-dd'
-        sheet['B' + str(lastRow)] = curr_symbol
-        sheet['C' + str(lastRow)] = current_price
-        sheet['D' + str(lastRow)] = previous_close_price
-        sheet['E' + str(lastRow)] = change
-        cell = sheet['E' + str(lastRow)]
-        cell.number_format = '0.00'
-        sheet['F' + str(lastRow)] = pctChange
-        cell = sheet['F'+ str(lastRow)]
-        cell.number_format = '0.00'
+        # Check if there is a sheet in the workbook for the current stock.  If not, add the sheet and add/format the header
+        try:
+            sheet = wb_obj[curr_symbol]
+        except KeyError:
+            sheet = addSheet(wb_obj, curr_symbol)
+            createColumnNames(wb_obj)
+            formatHeader(wb_obj)
+        finally:
+            lastRow = getLastRow(sheet)
+            cell = sheet['A' + str(lastRow)]
+            cell.value = datestr
+            cell.number_format = 'yyyy-mm-dd'
+            cell.alignment = Alignment(horizontal = 'right')
+            cell = sheet['B' + str(lastRow)]
+            cell.value = curr_symbol
+            cell.alignment = Alignment(horizontal='center')
+            cell = sheet['C' + str(lastRow)]
+            cell.value = current_price
+            cell.alignment = Alignment(horizontal='right')
+            cell = sheet['D' + str(lastRow)]
+            cell.value = previous_close_price
+            cell.alignment = Alignment(horizontal='right')
+            cell = sheet['E' + str(lastRow)]
+            cell.value = change
+            cell.number_format = '0.00'
+            cell.alignment = Alignment(horizontal='right')
+            cell = sheet['F' + str(lastRow)]
+            cell.value = pctChange
+            cell.number_format = '0.00'
+            cell.alignment = Alignment(horizontal='right')
 
 # main()- Self explanitory
 #
