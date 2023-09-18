@@ -307,18 +307,14 @@ def checkStocks(wb_obj, datestr):
             cell.alignment = Alignment(horizontal='center')
             cell = sheet['C' + str(lastRow)]
             cell.value = current_price
-            cell.alignment = Alignment(horizontal='right')
             cell = sheet['D' + str(lastRow)]
             cell.value = previous_close_price
-            cell.alignment = Alignment(horizontal='right')
             cell = sheet['E' + str(lastRow)]
             cell.value = change
             cell.number_format = '0.00'
-            cell.alignment = Alignment(horizontal='right')
             cell = sheet['F' + str(lastRow)]
             cell.value = pctChange
             cell.number_format = '0.00'
-            cell.alignment = Alignment(horizontal='right')
 
 # main()- Self explanitory
 #
