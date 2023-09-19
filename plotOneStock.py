@@ -1,41 +1,28 @@
 # /opt/homebrew/bin/python3
 '''
 --------------------------------------------------------------
--   plotStocks.py
--       This script looks up the provided stocks then uses
--       matplotlib to plot the closing price for the past 
--       365 days and displays the plot in a tkinter window
+-   plotOneStock.py
+-       This script looks up the Adjusted Closing Price 
+-       for one stock and plots the data to a window that
+-       displays the closing price and a trend line for the 
+-       stock.
 -
 -   Requires:
 -       yfinance
--       csv
 -       matplotlib
 -       seaborn
+-       pandas
 -       datetime
 -       tkinter
--       sys
 -
 -   Methods:
 -       get_numdays()
 -       get_dates()
--       read_stock_file()
--       get_select_company_winsize()
--       get_selected_companies()
--       set_selected_companies()
--       get_company_data()
+-       get_company()
 -       get_data()
 -       plot_data()
 -       plot_window()
 -       main()
--
--   Data for stock ticker, company name, line color and line style
--       are read in from .csv file stocktickers.csv.  The file should
--       consist of a row of data for every stock you wish to lookup.
--       Required columns are: 
--           A: Stock ticker 
--           B: Company Name
--           C: seaborn line color
--           D: seaborn line style
 -
 -   Jeff Canepa
 -   jeff.canepa@gmail.com
@@ -44,30 +31,16 @@
 '''
 
 import yfinance as yf
-import csv
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 import seaborn as sns; sns.set()
 import pandas as pd
 from datetime import datetime, timedelta
 from tkinter import *
 from tkinter.simpledialog import askinteger, askstring
-import sys
 
 #Global variables
 dates = []
-tickers = []
-company_names = []
-company_data = []
-cbuts = []
-selected_companies = []
-# List of lists with seaborn line colors and line styles
-linestyles = []
-btvars = []
-numdays = None
-trendline = None
 
 # get_numdays()- Get number of days to lookup stock data for
 # Requires: 
@@ -97,6 +70,14 @@ def get_dates(numdays):
     end_date = now.strftime('%b %d, %Y')
     return [now, then, yfinance_start_date, yfinance_end_date, start_date, end_date] 
 
+# get_company()- Get the stock ticker to look up
+#
+# Requires:
+# 
+# Returns:
+#   string with the stock ticker to look up
+#  
+
 def get_company():
     return askstring('Enter Ticker', 'Enter the stock ticker:')
 
@@ -114,14 +95,14 @@ def get_data(item):
     stockData = yf.download(tickers = item,
                          start= dates[2],
                          end= dates[3])
-    # stockData.name = item[0]
     return stockData
 
 # plot_data()- Plot stock data using Matplotlib and add it to Tkinter window
 # Requires:
-#   company-  a list of company objects containing stock data
-#   linestyles-   a list of lists with strings that represent line color and style
-#   window-   a tkinter window 
+#   company-   object containing the stock data
+#   ticker-    The stock ticker
+#   window-    The tkinter window to plot the data to
+#  
 # Returns:
 #
 def plot_data(company, ticker, window):
@@ -152,49 +133,6 @@ def plot_data(company, ticker, window):
     sns.despine()
     plt.title('Closing Prices\n{0} - {1}'.format(dates[2], dates[3]), size='x-large', color='black')
     plt.ylabel('Stock Price $ (USD)')
-    # line, = ax.plot(company.index.values, company['Adj Close'], label=ticker)
-    # mylines.append(line,)
-
-    # # Format the x and y tickers and labels
-    # ax.set(ylabel='Stock Price (USD)')
-    # ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%d/%Y'))
-    # ax.yaxis.set_major_formatter('${x:1.0f}')
-    # ax.tick_params(axis='x', labelrotation=45)
-    # ax.tick_params(axis='both', labelsize=9)
-
-    # # Adjust the number of tickers depending on number of days worth of
-    # # stock data there is to plot
-    # numDates = len(company['Adj Close'])
-    # if numDates <= 30:
-    #     ax.xaxis.set_minor_locator(mdates.DayLocator())
-    # elif numDates > 30 and numDates <= 120:
-    #     ax.xaxis.set_minor_locator(mdates.DayLocator(interval=2))
-    # elif numDates > 120 and numDates <= 730:
-    #     ax.xaxis.set_minor_locator(mdates.MonthLocator(interval=1))
-    # else:
-    #     ax.xaxis.set_major_locator(mdates.YearLocator())
-
-    # # Map legend lines to plot lines
-    # leg = ax.legend(loc = 'upper center', fancybox=True, framealpha=0.5, ncols=3, title='Click on marker to hide/show plot line')
-    # lined = {}
-    # for legline, origline in zip(leg.get_lines(), mylines):
-    #     legline.set_picker(True)  # Enable picking on the legend line.
-    #     legline.set_picker(5)
-    #     lined[legline] = origline
-
-    # # On the pick event, find the original line corresponding to the legend
-    # # proxy line, and toggle its visibility.
-    # def on_pick(event):
-    #     legline = event.artist
-    #     origline = lined[legline]
-    #     visible = not origline.get_visible()
-    #     origline.set_visible(visible)
-    #     # Change the alpha on the line in the legend, so we can see what lines
-    #     # have been toggled.
-    #     legline.set_alpha(1.0 if visible else 0.2)
-    #     fig.canvas.draw()
-
-    # fig.canvas.mpl_connect('pick_event', on_pick)
     
     # Create canvas and add it to Tkinter window
     canvas = FigureCanvasTkAgg(fig, master=window)
@@ -212,6 +150,8 @@ def plot_data(company, ticker, window):
 #               quits the app.
 #
 # Required:
+#   company_data- The object returned by yfinance that contains the stock data
+#   ticker-       The stock ticker used to do the lookup
 #
 # Returns:
 #
@@ -235,6 +175,8 @@ def plot_window(company_data, ticker):
 
     plotWindow.mainloop() 
 
+# main()
+#
 def main():
     global numdays
     global dates
