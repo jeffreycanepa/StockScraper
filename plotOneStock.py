@@ -41,6 +41,7 @@ from tkinter.simpledialog import askinteger, askstring
 
 #Global variables
 dates = []
+company_name = None
 
 # get_numdays()- Get number of days to lookup stock data for
 # Requires: 
@@ -90,11 +91,14 @@ def get_company():
 #
 def get_data(item):
     global dates
+    global company_name
     # Pseudo status
     print('Fetching data for', item, '...')
     stockData = yf.download(tickers = item,
                          start= dates[2],
                          end= dates[3])
+    cmp = yf.Ticker(item)
+    company_name = cmp.info['longName']
     return stockData
 
 # plot_data()- Plot stock data using Matplotlib and add it to Tkinter window
@@ -106,7 +110,7 @@ def get_data(item):
 # Returns:
 #
 def plot_data(company, ticker, window):
-    mylines = []
+    global company_name
     fig, ax = plt.subplots(figsize=(13,7))
     sns.set_style('darkgrid')
     ax.set_title('Closing Prices', fontsize=20)
@@ -119,7 +123,7 @@ def plot_data(company, ticker, window):
     data=company.loc[x1:].reset_index()
 
      # Add Closing price for stock as a line and as a linear regression (trend line)
-    ax1 = sns.lineplot(data=company,x=company.index,y='Adj Close', color='blue', label=ticker)
+    ax1 = sns.lineplot(data=company,x=company.index,y='Adj Close', color='blue', label=company_name)
     sns.regplot(data=company, x=company.index, y='Adj Close', color='black', scatter=False, ci=False)
    
     ax1.set_xlim(company.index[0], company.index[-1])
@@ -131,7 +135,7 @@ def plot_data(company, ticker, window):
     ax1.set_xticklabels(labels)
 
     sns.despine()
-    plt.title('Closing Prices\n{0} - {1}'.format(dates[2], dates[3]), size='x-large', color='black')
+    plt.title('{0} Closing Prices\n{1} - {2}'.format(company_name, dates[4], dates[5]), size='x-large', color='black')
     plt.ylabel('Stock Price $ (USD)')
     
     # Create canvas and add it to Tkinter window
