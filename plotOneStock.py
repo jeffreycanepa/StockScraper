@@ -184,14 +184,15 @@ def plot_window(company_data, ticker):
 def main():
     global numdays
     global dates
+
+    # Get the company ticker
+    ticker = get_company()
+
     # Get number of days to look up stock data for
     numdays = get_numdays()
 
     # Get start/end dates based on numdays
     dates = get_dates(numdays)
-
-    # Get the company ticker
-    ticker = get_company()
 
     # Fetch the stock data from yfinance
     company_data = get_data(ticker)
