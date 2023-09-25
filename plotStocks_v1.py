@@ -144,7 +144,6 @@ def get_selected_companies():
     cwindow = Tk()
     cwindow.title('Select Companies')
     cwindow.geometry(winsize)
-    # cwindow.eval(f'tk::PlaceWindow {cwindow._w} center')
     tline = IntVar()
     cb = IntVar()
 
@@ -329,15 +328,15 @@ def plot_window():
 def main():
     global dates
 
-    # Get number of days to look up stock data for
-    numdays = get_numdays()
-    dates = get_dates(numdays)
-
     # Get tickers and company names from csv file
     read_stock_file()
 
     # Get selection of companies from user
     get_selected_companies()
+
+    # Get number of days to look up stock data for
+    numdays = get_numdays()
+    dates = get_dates(numdays)
 
     # Fetch the stock data from yfinance
     get_company_data()
