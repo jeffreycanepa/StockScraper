@@ -278,18 +278,6 @@ def plot_data(company, linestyles, window):
     ax.tick_params(axis='x', labelrotation=45)
     ax.tick_params(axis='both', labelsize=9)
 
-    # Adjust the number of tickers depending on number of days worth of
-    # stock data there is to plot
-    numDates = len(company[0]['Adj Close'])
-    if numDates <= 30:
-        ax.xaxis.set_minor_locator(mdates.DayLocator())
-    elif numDates > 30 and numDates <= 120:
-        ax.xaxis.set_minor_locator(mdates.DayLocator(interval=2))
-    elif numDates > 120 and numDates <= 730:
-        ax.xaxis.set_minor_locator(mdates.MonthLocator(interval=1))
-    else:
-        ax.xaxis.set_major_locator(mdates.YearLocator())
-
     # Map legend lines to plot lines
     leg = ax.legend(loc = 'upper center', fancybox=True, framealpha=0.5, ncols=3, title='Click on marker to hide/show plot line')
     lined = {}
