@@ -273,7 +273,7 @@ def plot_data(company, linestyles, window):
 
     # Format the x and y tickers and labels
     ax.set(ylabel='Stock Price (USD)')
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%d/%Y'))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d \'%y'))
     ax.yaxis.set_major_formatter('${x:1.0f}')
     ax.tick_params(axis='x', labelrotation=45)
     ax.tick_params(axis='both', labelsize=9)
