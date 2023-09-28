@@ -130,9 +130,11 @@ def plot_data(company, ticker, window):
 
     # convert the axis back to datetime
     xticks = ax1.get_xticks()
-    labels = [pd.Timestamp.fromordinal(int(label)).date() for label in xticks]
+    labels = [pd.Timestamp.fromordinal(int(label)).strftime('%b %d, \'%y') for label in xticks]
     ax1.set_xticks(xticks)
     ax1.set_xticklabels(labels)
+    ax.tick_params(axis='x', labelrotation=45)
+    ax.tick_params(axis='both', labelsize=9)
 
     sns.despine()
     plt.title('{0} Closing Prices\n{1} - {2}'.format(company_name, dates[4], dates[5]), size='x-large', color='black')
