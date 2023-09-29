@@ -44,7 +44,6 @@ from openpyxl.styles import PatternFill, Font, Alignment
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
-
 # Global Variables
 myStocks = []
 myFile = 'myStocks.xlsx'
@@ -331,11 +330,14 @@ def main():
     if marketOpen == True:
         mktHours = getMarketOpenHours()
         mrktOpenMsg = ('NYSE and NASDAQ are currently open.\nPlease wait for these exchanges to close.\nMarket hours are:\nMon - Fri\n{0} - {1} {2}').format(mktHours[0],mktHours[1],mktHours[2])
+        print('\a') #Beep sound is played
         messagebox.showwarning('Markets still open', mrktOpenMsg)
+        
     else:
         if marketOpen == 'weekend':
             mktHours = getMarketOpenHours()
             mktClosedMsg = ('NYSE and NASDAQ are closed on weekends.\nMarket hours are:\nMon - Fri\n{0} - {1} {2}').format(mktHours[0],mktHours[1],mktHours[2])
+            print('\a') #Beep sound is played
             messagebox.showwarning('It\'s the weekend!',  mktClosedMsg)
         else:
             # Check to see if the script was already run today
@@ -350,6 +352,7 @@ def main():
                 # Save the file
                 myWorkBook.save(myFile)
             else:
+                print('\a') #Beep sound is played
                 messagebox.showerror('Script has already run', 'This script was already run today.\nNo action will be taken.')
 
 if __name__ == "__main__":
