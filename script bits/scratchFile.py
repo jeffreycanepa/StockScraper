@@ -2,24 +2,35 @@
 import tkinter
 import customtkinter
 
+ticker = None
 def getTicker():
-    theTicker = ticker.get()
-    print(theTicker)
+    def returnTicker():
+        global ticker
+        ticker = entryField.get()
+        return ticker
 
-app = customtkinter.CTk()
-app.geometry('200x140')
-app.title('Get Stock Ticker')
+    app = customtkinter.CTk()
+    app.geometry('200x140')
+    app.title('Get Stock Ticker')
 
-label = customtkinter.CTkLabel(app, text='Enter Stock Ticker')
-label.pack(padx=10, pady=10)
+    label = customtkinter.CTkLabel(app, text='Enter Stock Ticker')
+    label.pack(padx=10, pady=10)
 
-myTicker = tkinter.StringVar()
-ticker = customtkinter.CTkEntry(app, textvariable=myTicker)
-ticker.pack()
+    myTicker = tkinter.StringVar()
+    entryField = customtkinter.CTkEntry(app, textvariable=myTicker)
+    entryField.pack()
 
 
 
-btn = customtkinter.CTkButton(app, text="Enter", width=50, command=lambda:[getTicker(), app.quit()])
-btn.pack(padx=10,pady=20)
+    btn = customtkinter.CTkButton(app, text="Enter", width=50, command=lambda:[returnTicker(), app.quit()])
+    btn.pack(padx=10,pady=20)
 
-app.mainloop()
+    app.mainloop()
+
+def main():
+    global ticker
+    getTicker()
+    print(ticker)
+
+if __name__ == "__main__":
+    main()
