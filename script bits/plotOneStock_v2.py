@@ -1,9 +1,8 @@
 # Scratch script for practicing code before adding to larger script
-from datetime import datetime, timedelta
-import getTicker
-import numDays
-import getCompanyData
-import displayData
+import getTicker_ctk
+import numDays_ctk
+import getCompanyData_ctk
+import displayData_ctk
 
 dates = None
 numdays = None
@@ -15,15 +14,15 @@ def main():
     global numdays
     global dates
     # Get the Ticker symbol
-    getTicker.getTicker()
+    getTicker_ctk.getTicker()
     # Get number of days to look u
-    numDays.getNumDays()  
+    numDays_ctk.getNumDays()  
     # Get start/end dates based on numer of days
-    numDays.getDates()
+    numDays_ctk.getDates()
     # Grab the data from yfinance
-    getCompanyData.get_data()
+    getCompanyData_ctk.get_data()
     # Create window to display data in, plot the data, then display the data
-    displayData.plot_window()
+    displayData_ctk.plot_window()
 
 if __name__ == "__main__":
     main()

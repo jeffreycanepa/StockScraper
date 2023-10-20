@@ -60,11 +60,3 @@ def getTicker():
 
     app.mainloop()
 
-
-
-# def main():
-#     getTicker()
-# #     print(ticker)
-
-# if __name__ == "__main__":
-#     main()
