@@ -5,12 +5,13 @@ import customtkinter
 
 # Global variable
 ticker = None
+numdays = None
 
 # getTicker(): Using customtkinter put up a dialog that ask user to input a stock ticker to look up.
 def getTicker():    
     # Create customtkinter window
     app = customtkinter.CTk()
-    app.geometry('200x140')
+    app.geometry('200x140+200+40')
     app.title('Get Stock Ticker')
 
     # Add label to window
@@ -24,12 +25,13 @@ def getTicker():
 
     # Validate the data entered into the field.
     def validate():
+        global ticker
+        ticker = entryField.get()
+        
         # List of Special Characters to not allow
         special_ch = ['~', '`', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_',
                    '+', '=', '{', '}', '[', ']', '|', '\\', '/', ':', ';', '"', "'",
                     '<', '>', ',', '?']
-        global ticker
-        ticker = entryField.get()
         msg = ''
 
         if len(ticker) == 0:
@@ -53,14 +55,16 @@ def getTicker():
             app.destroy()
 
     # Add button to window.  Add commands to validate data input and to quit window when validation is completed        
-    btn = customtkinter.CTkButton(app, text="Enter", width=50, command=lambda:[validate()])
+    btn = customtkinter.CTkButton(app, text="Enter", width=20, height=10, command=lambda:[validate()])
     btn.pack(padx=10,pady=20)
 
     app.mainloop()
 
-def main():
-    getTicker()
-    print(ticker)
 
-if __name__ == "__main__":
-    main()
+
+# def main():
+#     getTicker()
+# #     print(ticker)
+
+# if __name__ == "__main__":
+#     main()
