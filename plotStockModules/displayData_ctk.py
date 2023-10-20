@@ -3,8 +3,8 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationTool
 import seaborn as sns; sns.set()
 import pandas as pd
 import customtkinter
-import getCompanyData_ctk
-import numDays_ctk
+import plotStockModules.getCompanyData as getCompanyData
+import plotStockModules.numDays_ctk as numDays
 
 # plot_data()- Plot stock data using Matplotlib and add it to Tkinter window
 # Requires:
@@ -15,9 +15,9 @@ import numDays_ctk
 # Returns:
 #
 def plot_data(window):
-    company_name = getCompanyData_ctk.company_name
-    company = getCompanyData_ctk.stockData
-    dates = numDays_ctk.dates
+    company_name = getCompanyData.company_name
+    company = getCompanyData.stockData
+    dates = numDays.dates
     fig, ax = plt.subplots(figsize=(13,8))
     sns.set_style('darkgrid')
     ax.set_title('Closing Prices', fontsize=20)
@@ -72,7 +72,7 @@ def plot_window():
     # Create the window
     # print('Inside plot_window')
     plotWindow = customtkinter.CTk()
-    plotWindow.title('Past ' + str(numDays_ctk.days) + ' Days')
+    plotWindow.title('Past ' + str(numDays.days) + ' Days')
     plotWindow.geometry('1000x880+200+40')
 
     # Quit window/app if user closes dialog using the window's close widget
