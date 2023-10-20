@@ -3,8 +3,8 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationTool
 import seaborn as sns; sns.set()
 import pandas as pd
 import customtkinter
-import getCompanyData_ctk
-import numDays_ctk
+import plotStockModules.getCompanyData_ctk as getCompanyData_ctk
+import plotStockModules.numDays_ctk as numDays_ctk
 
 # plot_data()- Plot stock data using Matplotlib and add it to Tkinter window
 # Requires:

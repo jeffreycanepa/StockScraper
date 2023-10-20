@@ -1,6 +1,6 @@
 import yfinance as yf
-import numDays_ctk
-import getTicker_ctk
+import plotStockModules.numDays_ctk as numDays_ctk
+import plotStockModules.getTicker_ctk as getTicker_ctk
 
 def get_data():
     global company_name

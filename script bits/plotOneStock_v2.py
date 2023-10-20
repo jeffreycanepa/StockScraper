@@ -1,8 +1,8 @@
 # Scratch script for practicing code before adding to larger script
-import getTicker_ctk
-import numDays_ctk
-import getCompanyData_ctk
-import displayData_ctk
+import plotStockModules.getTicker_ctk as getTicker
+import plotStockModules.numDays_ctk as numDays_ctk
+import plotStockModules.getCompanyData_ctk as getCompanyData_ctk
+import plotStockModules.displayData_ctk as displayData_ctk
 
 dates = None
 numdays = None
@@ -14,7 +14,7 @@ def main():
     global numdays
     global dates
     # Get the Ticker symbol
-    getTicker_ctk.getTicker()
+    getTicker.getTicker()
     # Get number of days to look u
     numDays_ctk.getNumDays()  
     # Get start/end dates based on numer of days
