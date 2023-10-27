@@ -12,4 +12,8 @@ def get_data():
                          start= numDays.dates[2],
                          end= numDays.dates[3])
     cmp = yf.Ticker(item)
-    company_name = cmp.info['longName']
+    try:
+        company_name = cmp.info['longName']
+    except:
+        company_name = item
+

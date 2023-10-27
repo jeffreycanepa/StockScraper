@@ -98,7 +98,10 @@ def get_data(item):
                          start= dates[2],
                          end= dates[3])
     cmp = yf.Ticker(item)
-    company_name = cmp.info['longName']
+    try:
+        company_name = cmp.info['longName']
+    except:
+        company_name = item
     return stockData
 
 # plot_data()- Plot stock data using Matplotlib and add it to Tkinter window
