@@ -9,7 +9,11 @@ global days
 global dates
 
 # getNumdays(): Using customtkinter put up a dialog that ask user to input a number of days to use for stock look up.
-def getNumDays():    
+def getNumDays():
+    # Function to use with bind event on dialog button
+    def click_return(event):
+        getValue()
+
     # Create customtkinter window
     app = customtkinter.CTk()
     app.geometry('200x140+200+40')
@@ -53,6 +57,8 @@ def getNumDays():
 
     # Add button to window.  Add commands to validate data input and to quit window when validation is completed        
     btn = customtkinter.CTkButton(app, text="Enter", width=20, height=10, command=lambda:[getValue()])
+    btn.bind('<Return>', click_return)   
+    btn.focus()
     btn.pack(padx=10,pady=20)
 
     app.mainloop()
