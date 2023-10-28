@@ -9,13 +9,8 @@ numdays = None
 
 # getTicker(): Using customtkinter put up a dialog that ask user to input a stock ticker to look up.
 def getTicker():
-
+    # Function to use with bind event for dialog button
     def click_return(event):
-        global ticker
-        ticker = myTicker.get()
-        app.destroy()
-
-    def lft_mouse_click(event):
         global ticker
         ticker = myTicker.get()
         app.destroy()
@@ -70,8 +65,6 @@ def getTicker():
     # Add button to window.  Add commands to validate data input and to quit window when validation is completed        
     btn = customtkinter.CTkButton(app, text="Enter", width=20, height=10, command=lambda:[validate()])
     btn.bind('<Return>', click_return)
-    btn.bind('<Button-1>', lft_mouse_click)
-    
     btn.focus()
     btn.pack(padx=10,pady=20)
 
