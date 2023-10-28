@@ -18,9 +18,9 @@ def plot_data(window):
     company_name = getCompanyData.company_name
     company = getCompanyData.stockData
     dates = numDays.dates
-    fig, ax = plt.subplots(figsize=(13,8))
+    fig, ax = plt.subplots(figsize=(8,7))
     sns.set_style('darkgrid')
-    ax.set_title('Closing Prices', fontsize=20)
+    # ax.set_title('Closing Prices', fontsize=20)
 
     # convert the regression line start date to ordinal
     x1 = pd.to_datetime(dates[0]).toordinal()
@@ -41,11 +41,12 @@ def plot_data(window):
     ax1.set_xticks(xticks)
     ax1.set_xticklabels(labels)
     ax.tick_params(axis='x', labelrotation=45)
-    ax.tick_params(axis='both', labelsize=9)
+    ax.tick_params(axis='both', labelsize=7)
 
     sns.despine()
-    plt.title('{0} Closing Prices\n{1} - {2}'.format(company_name, dates[4], dates[5]), size='x-large', color='black')
+    plt.title('{0} Closing Prices: {1} - {2}'.format(company_name, dates[4], dates[5]), size='x-large', color='black')
     plt.ylabel('Stock Price $ (USD)')
+    plt.xlabel('')
     
     # Create canvas and add it to Tkinter window
     canvas = FigureCanvasTkAgg(fig, master=window)
@@ -72,20 +73,32 @@ def plot_window():
     # Create the window
     # print('Inside plot_window')
     plotWindow = customtkinter.CTk()
-    plotWindow.title('Past ' + str(numDays.days) + ' Days')
-    plotWindow.geometry('1000x880+200+40')
+    # plotWindow.title('Past ' + str(numDays.days) + ' Days')
+    plotWindow.title(getCompanyData.company_name + ' Closing Prices')
+    
+    # size the window
+    width = 800
+    height = 780
+    x = (plotWindow.winfo_screenwidth() / 2) - (width / 2)
+    y = (plotWindow.winfo_screenheight() / 2) - ((height / 2) + 60)
+    plotWindow.geometry(f'{width}x{height}+{int(x)}+{int(y)}')
 
     # Quit window/app if user closes dialog using the window's close widget
     def on_closing():
         plotWindow.destroy()
-
     plotWindow.protocol('WM_DELETE_WINDOW', on_closing)
+
+    # Quit window/app if user uses Return key
+    def on_return(event):
+        plotWindow.destroy()
 
     # Using Matplotlib display company stock data
     plot_data(plotWindow)
 
     # Add a button to quit when done viewing the plot data
-    bt_1 = customtkinter.CTkButton(plotWindow, text='Quit', command=plotWindow.quit, width=20, height=12)
+    bt_1 = customtkinter.CTkButton(plotWindow, text='Quit', width=20, height=12)
+    bt_1.bind('<Return>', on_return)
+    bt_1.focus()
     bt_1.pack(pady=10)
 
     plotWindow.mainloop() 
