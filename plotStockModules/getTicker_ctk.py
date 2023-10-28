@@ -27,6 +27,7 @@ def getTicker():
     def validate():
         global ticker
         ticker = entryField.get()
+        ticker = ticker.upper()
         
         # List of Special Characters to not allow
         special_ch = ['~', '`', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_',
@@ -35,13 +36,13 @@ def getTicker():
         msg = ''
 
         if len(ticker) == 0:
-            msg = 'Field \'Ticker\' can\'t be empty'
+            msg = 'Entry field \'Stock Ticker\' can\'t be empty'
         else:
             try:
                 if any(ch in special_ch for ch in ticker):
-                    msg = 'Ticker cannot have special characters'
+                    msg = 'Stock Ticker cannot contain special characters'
                 elif any(ch.isdigit() for ch in ticker):
-                    msg = 'Ticker can\'t have numbers'
+                    msg = 'Stock Ticker can\'t contain numbers'
                 elif len(ticker) > 5:
                     msg = 'Ticker is too long.'
                 else:
