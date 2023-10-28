@@ -9,14 +9,13 @@
 -       to plot the data within a tkinter window 
 -
 -   Required Packages:
--       yfinance
--       csv
--       tkinter
--       customtkinter
--       matplotlib
--       seaborn
--       pandas
--       datetime
+-       yfinance: 0.2.31
+-       tkinter: 
+-       customtkinter: 5.2.1
+-       matplotlib: 3.8.0
+-       seaborn: 0.13.0
+-       pandas: 2.1.1
+-       datetime:
 -
 -   Required Modules:
 -       getTicker_ctk.py

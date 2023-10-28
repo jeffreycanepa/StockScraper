@@ -80,7 +80,8 @@ def get_dates(numdays):
 #  
 
 def get_company():
-    return askstring('Enter Ticker', 'Enter the stock ticker:')
+    myTicker = askstring('Enter Ticker', 'Enter the stock ticker:')
+    return myTicker.upper()
 
 # get_data()- Using yfinance, get stock data for provided stock ticker.
 # Requires: 
@@ -114,9 +115,9 @@ def get_data(item):
 #
 def plot_data(company, ticker, window):
     global company_name
-    fig, ax = plt.subplots(figsize=(13,7))
+    fig, ax = plt.subplots(figsize=(8,7))
     sns.set_style('darkgrid')
-    ax.set_title('Closing Prices', fontsize=20)
+    # ax.set_title('Closing Prices', fontsize=7)
 
     # convert the regression line start date to ordinal
     x1 = pd.to_datetime(dates[0]).toordinal()
@@ -137,11 +138,12 @@ def plot_data(company, ticker, window):
     ax1.set_xticks(xticks)
     ax1.set_xticklabels(labels)
     ax.tick_params(axis='x', labelrotation=45)
-    ax.tick_params(axis='both', labelsize=9)
+    ax.tick_params(axis='both', labelsize=7)
 
     sns.despine()
-    plt.title('{0} Closing Prices\n{1} - {2}'.format(company_name, dates[4], dates[5]), size='x-large', color='black')
+    plt.title('{0} Closing Prices: {1} - {2}'.format(company_name, dates[4], dates[5]), size='large', color='black')
     plt.ylabel('Stock Price $ (USD)')
+    plt.xlabel('')
     
     # Create canvas and add it to Tkinter window
     canvas = FigureCanvasTkAgg(fig, master=window)
@@ -167,14 +169,21 @@ def plot_data(company, ticker, window):
 def plot_window(company_data, ticker):
     # Create the window
     plotWindow = Tk()
-    plotWindow.title('Past ' + str(numdays) + ' Days')
-    plotWindow.geometry('1000x770+200+40')
+    width = 800
+    height = 760
+    x = (plotWindow.winfo_screenwidth() / 2) - (width / 2)
+    y = (plotWindow.winfo_screenheight() / 2) - ((height / 2) + 60)
+    plotWindow.title(company_name +  ' Closing Prices')
+    plotWindow.geometry(f'{width}x{height}+{int(x)}+{int(y)}')
 
     # Quit window/app if user closes dialog using the window's close widget
     def on_closing():
         plotWindow.destroy()
 
     plotWindow.protocol('WM_DELETE_WINDOW', on_closing)
+
+    # lock the window size
+    plotWindow.resizable(False, False)
 
     # Using Matplotlib display company stock data
     plot_data(company_data, ticker, plotWindow)
