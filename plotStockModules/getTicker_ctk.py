@@ -8,14 +8,26 @@ ticker = None
 numdays = None
 
 # getTicker(): Using customtkinter put up a dialog that ask user to input a stock ticker to look up.
-def getTicker():    
+def getTicker():
+
+    def click_return(event):
+        global ticker
+        ticker = myTicker.get()
+        app.destroy()
+
+    def lft_mouse_click(event):
+        global ticker
+        ticker = myTicker.get()
+        app.destroy()
+
     # Create customtkinter window
     app = customtkinter.CTk()
     app.geometry('200x140+200+40')
     app.title('Get Stock Ticker')
 
     # Add label to window
-    label = customtkinter.CTkLabel(app, text='Enter Stock Ticker')
+    labelStr = tkinter.StringVar(value= 'Enter Stock Ticker')
+    label = customtkinter.CTkLabel(app, textvariable= labelStr)
     label.pack(padx=10, pady=10)
 
     # Add field to get ticker.  Make it accessible with tkinter.StringVar()
@@ -57,6 +69,10 @@ def getTicker():
 
     # Add button to window.  Add commands to validate data input and to quit window when validation is completed        
     btn = customtkinter.CTkButton(app, text="Enter", width=20, height=10, command=lambda:[validate()])
+    btn.bind('<Return>', click_return)
+    btn.bind('<Button-1>', lft_mouse_click)
+    
+    btn.focus()
     btn.pack(padx=10,pady=20)
 
     app.mainloop()
