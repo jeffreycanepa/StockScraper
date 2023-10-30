@@ -128,10 +128,13 @@ def read_stock_file():
 # Returns:
 #   string of the window dimensions to use for dialog Select Companies
 #
-def get_select_company_winsize():
+def get_select_company_winsize(cwindow):
+    winWidth = 200
     winHeight = 120 + (len(company_names) * 23)
-    winGeometry = '200x{}+200+40'
-    return winGeometry.format(winHeight)
+    x = (cwindow.winfo_screenwidth() / 2) - (winWidth / 2)
+    y = (cwindow.winfo_screenheight() / 2) - ((winHeight / 2) + 60)
+    winGeometry = f'{winWidth}x{winHeight}+{int(x)}+{int(y)}'
+    return winGeometry
 
 # get_selected_companies()- Ask user to select the stocks to lookup data for
 #
@@ -142,8 +145,8 @@ def get_select_company_winsize():
 #   Returns:
 #
 def get_selected_companies():
-    winsize = get_select_company_winsize()
     cwindow = Tk()
+    winsize = get_select_company_winsize(cwindow)
     cwindow.title('Select Companies')
     cwindow.geometry(winsize)
     # cwindow.eval(f'tk::PlaceWindow {cwindow._w} center')
@@ -323,7 +326,13 @@ def plot_window():
     # Create the window
     plotWindow = Tk()
     plotWindow.title('Past ' + str(numdays) + ' Days')
-    plotWindow.geometry('1000x770+200+40')
+
+    # Set Window size and center on screen
+    width = 1000
+    height = 770
+    x = (plotWindow.winfo_screenwidth() / 2) - (width / 2)
+    y = (plotWindow.winfo_screenheight() / 2) - ((height / 2) + 60)
+    plotWindow.geometry(f'{width}x{height}+{int(x)}+{int(y)}')
 
     # Quit window/app if user closes dialog using the window's close widget
     def on_closing():
@@ -331,11 +340,17 @@ def plot_window():
 
     plotWindow.protocol('WM_DELETE_WINDOW', on_closing)
 
+    def on_return(event):
+        plotWindow.destroy()
+
     # Using Matplotlib display company stock data
     plot_data(company_data, linestyles, plotWindow)
 
     # Add a button to quit when done viewing the plot data
-    bt_1 = Button(plotWindow, text='Quit', command=plotWindow.quit).pack()
+    bt_1 = Button(plotWindow, text='Quit', command=plotWindow.quit)
+    bt_1.bind('<Return>', on_return)
+    bt_1.focus()
+    bt_1.pack()
 
     plotWindow.mainloop() 
 
