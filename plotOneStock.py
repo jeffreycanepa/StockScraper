@@ -180,6 +180,10 @@ def plot_window(company_data, ticker):
     def on_closing():
         plotWindow.destroy()
 
+    # Quit window/app if user uses the Return key
+    def on_return(event):
+        plotWindow.quit()
+
     plotWindow.protocol('WM_DELETE_WINDOW', on_closing)
 
     # lock the window size
@@ -189,7 +193,10 @@ def plot_window(company_data, ticker):
     plot_data(company_data, ticker, plotWindow)
 
     # Add a button to quit when done viewing the plot data
-    bt_1 = Button(plotWindow, text='Quit', command=plotWindow.quit).pack()
+    bt_1 = Button(plotWindow, text='Quit', command=plotWindow.quit)
+    bt_1.bind('<Return>', on_return)
+    bt_1.focus()
+    bt_1.pack()
 
     plotWindow.mainloop() 
 
