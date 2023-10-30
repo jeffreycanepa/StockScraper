@@ -11,9 +11,7 @@ numdays = None
 def getTicker():
     # Function to use with bind event for dialog button
     def click_return(event):
-        global ticker
-        ticker = myTicker.get()
-        app.destroy()
+        validate()
 
     # Create customtkinter window
     app = customtkinter.CTk()
