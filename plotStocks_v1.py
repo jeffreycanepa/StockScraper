@@ -126,10 +126,13 @@ def read_stock_file():
 # Returns:
 #   string of the window dimensions to use for dialog Select Companies
 #
-def get_select_company_winsize():
+def get_select_company_winsize(cwindow):
+    winWidth = 200
     winHeight = 150 + (len(company_names) * 23)
-    winGeometry = '200x{}+200+40'
-    return winGeometry.format(winHeight)
+    x = (cwindow.winfo_screenwidth() / 2) - (winWidth / 2)
+    y = (cwindow.winfo_screenheight() / 2) - ((winHeight / 2) + 60)
+    winGeometry = f'{winWidth}x{winHeight}+{int(x)}+{int(y)}'
+    return winGeometry
 
 # get_selected_companies()- Ask user to select the stocks to lookup data for
 #
@@ -140,12 +143,17 @@ def get_select_company_winsize():
 #   Returns:
 #
 def get_selected_companies():
-    winsize = get_select_company_winsize()
     cwindow = Tk()
+    winsize = get_select_company_winsize(cwindow)
     cwindow.title('Select Companies')
     cwindow.geometry(winsize)
     tline = IntVar()
     cb = IntVar()
+
+    # Set selected companies and quit the window 
+    def on_return(event):
+        set_selected_companies()
+        cwindow.destroy()
 
     # Method to validate is any checkbuttons are checked. If they are, then enable the enter button.
     def is_checkbox_checked():
@@ -194,6 +202,9 @@ def get_selected_companies():
         cbuts[index].pack()
     Checkbutton(frame2, text='Select All', anchor='w', width=15, variable=cb, onvalue=1, offvalue=0, command=lambda:[select_deselect_all(),is_checkbox_checked()]).pack()
     Checkbutton(frame2, text='Display Trendline', anchor='w', width=15, variable=tline, onvalue=1, offvalue=0, command=showline).pack()
+    
+    # Bind Return key to Button
+    bt1.bind('<Return>', on_return)
     bt1.pack()
 
     # Quit window/app if user closes dialog using the window's close widget.  Using sys.exit.
@@ -308,7 +319,13 @@ def plot_window():
     # Create the window
     plotWindow = Tk()
     plotWindow.title('Past ' + str(numdays) + ' Days')
-    plotWindow.geometry('1000x770')
+
+    # Set Window size and center on screen
+    width = 1000
+    height = 770
+    x = (plotWindow.winfo_screenwidth() / 2) - (width / 2)
+    y = (plotWindow.winfo_screenheight() / 2) - ((height / 2) + 60)
+    plotWindow.geometry(f'{width}x{height}+{int(x)}+{int(y)}')
 
     # Quit window/app if user closes dialog using the window's close widget
     def on_closing():
@@ -316,11 +333,17 @@ def plot_window():
 
     plotWindow.protocol('WM_DELETE_WINDOW', on_closing)
 
+    def on_return(event):
+        plotWindow.destroy()
+    
     # Using Matplotlib display company stock data
     plot_data(company_data, linestyle, plotWindow)
 
     # Add a button to quit when done viewing the plot data
-    bt_1 = Button(plotWindow, text='Quit', command=plotWindow.quit).pack()
+    bt_1 = Button(plotWindow, text='Quit', command=plotWindow.quit)
+    bt_1.bind('<Return>', on_return)
+    bt_1.focus()
+    bt_1.pack()
 
     plotWindow.mainloop() 
 

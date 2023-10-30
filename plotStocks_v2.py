@@ -149,9 +149,13 @@ def get_selected_companies():
     winsize = get_select_company_winsize(cwindow)
     cwindow.title('Select Companies')
     cwindow.geometry(winsize)
-    # cwindow.eval(f'tk::PlaceWindow {cwindow._w} center')
     tline = IntVar()
     cb = IntVar()
+
+    # Set selected companies and quit the window 
+    def on_return(event):
+        set_selected_companies()
+        cwindow.destroy()
 
     # Method to validate is any checkbuttons are checked. If they are, then enable the enter button.
     def is_checkbox_checked():
@@ -199,7 +203,9 @@ def get_selected_companies():
         cbuts.append(Checkbutton(frame, text=item, anchor='w', width=50, variable=btvars[index], onvalue=1, offvalue=0, command=is_checkbox_checked))
         cbuts[index].pack()
     Checkbutton(frame2, text='Select All', anchor='w', width=50, variable=cb, onvalue=1, offvalue=0, command=lambda:[select_deselect_all(),is_checkbox_checked()]).pack()
-    # Checkbutton(frame2, text='Display Trendline', anchor='w', width=15, variable=tline, onvalue=1, offvalue=0, command=showline).pack()
+
+    # Bind Return key to Button
+    bt1.bind('<Return>', on_return)
     bt1.pack()
 
     # Quit window/app if user closes dialog using the window's close widget.  Using sys.exit.
