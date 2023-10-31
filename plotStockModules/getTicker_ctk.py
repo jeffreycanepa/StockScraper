@@ -14,18 +14,18 @@ def getTicker():
         validate()
 
     # Create customtkinter window
-    app = customtkinter.CTk()
-    app.geometry('200x140+200+40')
-    app.title('Get Stock Ticker')
+    ticker_window = customtkinter.CTk()
+    ticker_window.geometry('200x140+200+40')
+    ticker_window.title('Get Stock Ticker')
 
     # Add label to window
     labelStr = tkinter.StringVar(value= 'Enter Stock Ticker')
-    label = customtkinter.CTkLabel(app, textvariable= labelStr)
+    label = customtkinter.CTkLabel(ticker_window, textvariable= labelStr)
     label.pack(padx=10, pady=10)
 
     # Add field to get ticker.  Make it accessible with tkinter.StringVar()
     myTicker = tkinter.StringVar()
-    entryField = customtkinter.CTkEntry(app, textvariable=myTicker)
+    entryField = customtkinter.CTkEntry(ticker_window, textvariable=myTicker)
     entryField.pack()
 
     # Validate the data entered into the field.
@@ -58,13 +58,13 @@ def getTicker():
         if msg != 'Success':
             messagebox.showinfo('message', msg)
         else:
-            app.destroy()
+            ticker_window.destroy()
 
     # Add button to window.  Add commands to validate data input and to quit window when validation is completed        
-    btn = customtkinter.CTkButton(app, text="Enter", width=20, height=10, command=lambda:[validate()])
+    btn = customtkinter.CTkButton(ticker_window, text="Enter", width=20, height=10, command=lambda:[validate()])
     btn.bind('<Return>', click_return)
     btn.focus()
     btn.pack(padx=10,pady=20)
 
-    app.mainloop()
+    ticker_window.mainloop()
 

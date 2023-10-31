@@ -15,9 +15,9 @@ def getNumDays():
         getValue()
 
     # Create customtkinter window
-    app = customtkinter.CTk()
-    app.geometry('200x140+200+40')
-    app.title('Get Number of Days')
+    days_window = customtkinter.CTk()
+    days_window.geometry('200x140+200+40')
+    days_window.title('Get Number of Days')
 
     # Get the value entered
     def getValue():
@@ -38,30 +38,30 @@ def getNumDays():
             messagebox.showinfo('message', msg)
         else:
             days = sdays
-            app.destroy()
+            days_window.destroy()
 
     # Validate the data entered into the field.
     def validate(u_input):
         return u_input.isdigit()
-    my_valid = app.register(validate)
+    my_valid = days_window.register(validate)
 
     # Add label to window
-    label = customtkinter.CTkLabel(app, text='Enter the Number of Days')
+    label = customtkinter.CTkLabel(days_window, text='Enter the Number of Days')
     label.pack(padx=10, pady=10)
 
     # Add field to get ticker.  Make it accessible with tkinter.StringVar()
     myDays = tkinter.StringVar()
-    entryField = customtkinter.CTkEntry(app,validate='key',validatecommand=(my_valid,'%S'), textvariable=myDays)
+    entryField = customtkinter.CTkEntry(days_window,validate='key',validatecommand=(my_valid,'%S'), textvariable=myDays)
     entryField.insert(0, 365)
     entryField.pack()
 
     # Add button to window.  Add commands to validate data input and to quit window when validation is completed        
-    btn = customtkinter.CTkButton(app, text="Enter", width=20, height=10, command=lambda:[getValue()])
+    btn = customtkinter.CTkButton(days_window, text="Enter", width=20, height=10, command=lambda:[getValue()])
     btn.bind('<Return>', click_return)   
     btn.focus()
     btn.pack(padx=10,pady=20)
 
-    app.mainloop()
+    days_window.mainloop()
 
 def getDates():
     global days
