@@ -13,7 +13,23 @@ def get_data():
                          end= numDays.dates[3])
     cmp = yf.Ticker(item)
     try:
-        company_name = cmp.info['longName']
+        # company_name = cmp.info['longName']
+
+        # yfinance info seems to be flakey, so get company name by other means
+        company_name = get_company_name(item)
     except:
         company_name = item
 
+def get_company_name(ticker):
+    import requests, re
+
+    url = 'https://finance.yahoo.com/quote/WMT/'
+    url = url.replace("WMT",ticker)
+
+    req = requests.get(url)
+    html = req.text
+
+    name = re.search(r'\<title>([^\s]+)\ ([^\s]+)', html)
+    result = str(name.group(0))
+    result = result.replace("<title>", "")
+    return result
