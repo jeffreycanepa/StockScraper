@@ -8,6 +8,21 @@ from datetime import datetime, timedelta
 global days
 global dates
 
+# get_winsize()- Set the location/size of the window 
+#
+# Requires:
+#   cwindow- The window object
+#
+# Returns:
+#   string of the window dimensions to use.
+#
+def set_winsize(cwindow):
+    winWidth = 200
+    winHeight = 140
+    x = (cwindow.winfo_screenwidth() / 2) - (winWidth / 2)
+    winGeometry = f'{winWidth}x{winHeight}+{int(x)}+{80}'
+    return winGeometry
+
 # getNumdays(): Using customtkinter put up a dialog that ask user to input a number of days to use for stock look up.
 def getNumDays():
     # Function to use with bind event on dialog button
@@ -16,7 +31,7 @@ def getNumDays():
 
     # Create customtkinter window
     days_window = customtkinter.CTk()
-    days_window.geometry('200x140+200+40')
+    days_window.geometry(set_winsize(days_window))
     days_window.title('Get Number of Days')
 
     # Get the value entered

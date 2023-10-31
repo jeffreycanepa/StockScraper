@@ -72,8 +72,7 @@ def set_winsize(cwindow):
     winWidth = 800
     winHeight = 780
     x = (cwindow.winfo_screenwidth() / 2) - (winWidth / 2)
-    y = (cwindow.winfo_screenheight() / 2) - ((winHeight / 2) + 60)
-    winGeometry = f'{winWidth}x{winHeight}+{int(x)}+{int(y)}'
+    winGeometry = f'{winWidth}x{winHeight}+{int(x)}+{80}'
     return winGeometry
 
 # plot_window()- A tk window for displaying the data plot from plot_data().  Quiting dialog

@@ -7,6 +7,21 @@ import customtkinter
 ticker = None
 numdays = None
 
+# get_winsize()- Set the location/size of the window 
+#
+# Requires:
+#   cwindow- The window object
+#
+# Returns:
+#   string of the window dimensions to use.
+#
+def set_winsize(cwindow):
+    winWidth = 200
+    winHeight = 140
+    x = (cwindow.winfo_screenwidth() / 2) - (winWidth / 2)
+    winGeometry = f'{winWidth}x{winHeight}+{int(x)}+{80}'
+    return winGeometry
+
 # getTicker(): Using customtkinter put up a dialog that ask user to input a stock ticker to look up.
 def getTicker():
     # Function to use with bind event for dialog button
@@ -15,7 +30,7 @@ def getTicker():
 
     # Create customtkinter window
     ticker_window = customtkinter.CTk()
-    ticker_window.geometry('200x140+200+40')
+    ticker_window.geometry(set_winsize(ticker_window))
     ticker_window.title('Get Stock Ticker')
 
     # Add label to window
