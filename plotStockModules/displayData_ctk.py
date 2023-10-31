@@ -44,7 +44,7 @@ def plot_data(window):
     ax.tick_params(axis='both', labelsize=7)
 
     sns.despine()
-    plt.title('{0} Closing Prices: {1} - {2}'.format(company_name, dates[4], dates[5]), size='x-large', color='black')
+    plt.title('{0} Closing Price: {1} - {2}'.format(company_name, dates[4], dates[5]), size='x-large', color='black')
     plt.ylabel('Stock Price $ (USD)')
     plt.xlabel('')
     
@@ -60,6 +60,22 @@ def plot_data(window):
     # placing the toolbar on the Tkinter window
     canvas.get_tk_widget().pack()
 
+# get_winsize()- Set the location/size of the window 
+#
+# Requires:
+#   cwindow- The window object
+#
+# Returns:
+#   string of the window dimensions to use.
+#
+def get_winsize(cwindow):
+    winWidth = 800
+    winHeight = 780
+    x = (cwindow.winfo_screenwidth() / 2) - (winWidth / 2)
+    y = (cwindow.winfo_screenheight() / 2) - ((winHeight / 2) + 60)
+    winGeometry = f'{winWidth}x{winHeight}+{int(x)}+{int(y)}'
+    return winGeometry
+
 # plot_window()- A tk window for displaying the data plot from plot_data().  Quiting dialog
 #               quits the app.
 #
@@ -71,17 +87,12 @@ def plot_data(window):
 #
 def plot_window():
     # Create the window
-    # print('Inside plot_window')
     plotWindow = customtkinter.CTk()
     # plotWindow.title('Past ' + str(numDays.days) + ' Days')
-    plotWindow.title(getCompanyData.company_name + ' Closing Prices')
+    plotWindow.title(getCompanyData.company_name + ' Closing Price')
     
     # size the window
-    width = 800
-    height = 780
-    x = (plotWindow.winfo_screenwidth() / 2) - (width / 2)
-    y = (plotWindow.winfo_screenheight() / 2) - ((height / 2) + 60)
-    plotWindow.geometry(f'{width}x{height}+{int(x)}+{int(y)}')
+    plotWindow.geometry(get_winsize(plotWindow))
 
     # Quit window/app if user closes dialog using the window's close widget
     def on_closing():
@@ -98,6 +109,7 @@ def plot_window():
     # Add a button to quit when done viewing the plot data
     bt_1 = customtkinter.CTkButton(plotWindow, text='Quit', width=20, height=12)
     bt_1.bind('<Return>', on_return)
+    bt_1.bind('<Button-1>', on_return)
     bt_1.focus()
     bt_1.pack(pady=10)
 
