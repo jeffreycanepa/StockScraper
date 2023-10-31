@@ -277,15 +277,17 @@ def openExcelFile():
 #
 def checkStocks(wb_obj, datestr):
     for stocks in myStocks:
-        ticker = yf.Ticker(stocks).info
-        curr_symbol = ticker['symbol']
+        ticker = yf.Ticker(stocks)
+        prices = ticker.history(period='2d')
+        curr_symbol = stocks
+
         # For reasons unknown to me, XLU does not have currentPrice as part of Yahoo Finance ticker info.
         # Use navPrice instead
         if curr_symbol == 'XLU':
-            current_price = ticker['navPrice']
+            current_price = prices.iloc[1,3]
         else:
-            current_price = ticker['currentPrice']
-        previous_close_price = ticker['regularMarketPreviousClose']
+            current_price = prices.iloc[1,3]
+        previous_close_price = prices.iloc[0,3]
         change = getChange(current_price, previous_close_price)
         pctChange = getPercentChange(current_price, previous_close_price)
         # Check if there is a sheet in the workbook for the current stock.  If not, add the sheet and add/format the header
