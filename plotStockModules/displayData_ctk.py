@@ -68,7 +68,7 @@ def plot_data(window):
 # Returns:
 #   string of the window dimensions to use.
 #
-def get_winsize(cwindow):
+def set_winsize(cwindow):
     winWidth = 800
     winHeight = 780
     x = (cwindow.winfo_screenwidth() / 2) - (winWidth / 2)
@@ -92,7 +92,7 @@ def plot_window():
     plotWindow.title(getCompanyData.company_name + ' Closing Price')
     
     # size the window
-    plotWindow.geometry(get_winsize(plotWindow))
+    plotWindow.geometry(set_winsize(plotWindow))
 
     # Quit window/app if user closes dialog using the window's close widget
     def on_closing():
