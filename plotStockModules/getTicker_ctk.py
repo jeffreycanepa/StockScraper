@@ -40,7 +40,7 @@ def getTicker():
 
     # Add field to get ticker.  Make it accessible with tkinter.StringVar()
     myTicker = tkinter.StringVar()
-    entryField = customtkinter.CTkEntry(ticker_window, textvariable=myTicker)
+    entryField = customtkinter.CTkEntry(ticker_window, width = 60, textvariable=myTicker)
     entryField.pack()
 
     # Validate the data entered into the field.
