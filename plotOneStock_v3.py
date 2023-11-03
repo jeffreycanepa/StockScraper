@@ -1,7 +1,7 @@
 # /opt/homebrew/bin/python3
 '''
 --------------------------------------------------------------
--   plotOneStock_v2.py
+-   plotOneStock_v3.py
 -       This script looks up the closing price for a stock 
 -       that the user supplies by calling yfinance. The user
 -       enters a stock ticker, then is asked to choose a start
@@ -31,16 +31,20 @@
 -       plot_window()
 -       main()
 -
+-   New in Version 3:
+-       Replaced numDays.getNumDays() and numDays.getDates() with numDays.get_lookup_dates()
+-       This new method uses tkcalendar to allow the user pick a start/end date using the
+-       tkcalendar widget within a customtkinter window.
 -
 -   Jeff Canepa
 -   jeff.canepa@gmail.com
--   Oct 2023
+-   Nov 2023
 --------------------------------------------------------------
 '''
 import plotStockModules.getTicker_ctk as getTicker
-import plotStockModules.numDays_ctk_v3 as numDays
-import plotStockModules.getCompanyData_v3 as getCompanyData
-import plotStockModules.displayData_ctk_v3 as displayData
+import plotStockModules.numDays_ctk as numDays
+import plotStockModules.getCompanyData as getCompanyData
+import plotStockModules.displayData_ctk as displayData
 
 dates = None
 numdays = None
