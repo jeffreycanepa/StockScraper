@@ -32,7 +32,7 @@ def getNumDays():
     # Create customtkinter window
     days_window = customtkinter.CTk()
     days_window.geometry(set_winsize(days_window))
-    days_window.title('Get Number of Days')
+    days_window.title('Number of Days')
 
     # Get the value entered
     def getValue():
@@ -66,7 +66,10 @@ def getNumDays():
 
     # Add field to get ticker.  Make it accessible with tkinter.StringVar()
     myDays = tkinter.StringVar()
-    entryField = customtkinter.CTkEntry(days_window,validate='key',validatecommand=(my_valid,'%S'), textvariable=myDays)
+    entryField = customtkinter.CTkEntry(days_window,validate='key',
+                                        width= 50,
+                                        validatecommand=(my_valid,'%S'), 
+                                        textvariable=myDays)
     entryField.insert(0, 365)
     entryField.pack()
 
