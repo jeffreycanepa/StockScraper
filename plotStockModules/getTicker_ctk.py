@@ -76,7 +76,7 @@ def getTicker():
             ticker_window.destroy()
 
     # Add button to window.  Add commands to validate data input and to quit window when validation is completed        
-    btn = customtkinter.CTkButton(ticker_window, text="Enter", width=20, height=10, command=lambda:[validate()])
+    btn = customtkinter.CTkButton(ticker_window, text="Enter", width=20, height=10, command=validate)
     btn.bind('<Return>', click_return)
     btn.focus()
     btn.pack(padx=10,pady=20)

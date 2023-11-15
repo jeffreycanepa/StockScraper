@@ -103,6 +103,11 @@ class calendar_Window:
         # Set geometry and Title
         root.geometry(self.set_winsize(root))
         root.title(self.title)
+
+        # Function to use with bind event for dialog button
+        def click_return(event):
+            get_day(self)
+            root.destroy()
     
         # Get today's date
         today = date.today()
@@ -141,6 +146,8 @@ class calendar_Window:
         # Add Button
         bt1 = customtkinter.CTkButton(root, text = ('Set ' + self.title), 
             command = lambda:[get_day(self), root.destroy()])
+        bt1.bind('<Return>', click_return)
+        bt1.focus()
         bt1.pack(pady=5)
 
         root.mainloop()
@@ -219,7 +226,7 @@ def getNumDays():
     entryField.pack()
 
     # Add button to window.  Add commands to validate data input and to quit window when validation is completed        
-    btn = customtkinter.CTkButton(days_window, text="Enter", width=20, height=10, command=lambda:[getValue()])
+    btn = customtkinter.CTkButton(days_window, text="Enter", width=20, height=10, command=getValue)
     btn.bind('<Return>', click_return)   
     btn.focus()
     btn.pack(padx=10,pady=20)
