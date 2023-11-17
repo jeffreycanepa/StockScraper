@@ -114,8 +114,13 @@ def read_stock_file():
             linestyle.append([ccolor, cstyle])
     except FileNotFoundError as e:
         print(e)
+        print('You need to create a csv file named \"stocktickers.csv\" and add\n',
+               'company ticker, company name, line color and line style.\n',
+               'Example: \"AAPL,Apple,blue,solid\"')
+        sys.exit()
     except:
         print('Something went wrong with accessing file stocktickers.csv')
+        sys.exit()
 
 # get_select_company_winsize()- Set the height of the Select Companies dialog based on 
 #                               number of companies listed in company_names
