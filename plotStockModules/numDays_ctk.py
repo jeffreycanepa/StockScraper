@@ -113,7 +113,7 @@ class calendar_Window:
         today = date.today()
         oneYearAgo = today - timedelta(days=365)
         maxDate = today - timedelta(days=1)
-        minDate = today - timedelta(days=3652) #10 years(ish)
+        minDate = today - timedelta(days=7305) #20 years(ish)
 
         # Add Instruction String
         lbl1 = customtkinter.CTkLabel(root, text=self.winTitle).pack(pady=5)
