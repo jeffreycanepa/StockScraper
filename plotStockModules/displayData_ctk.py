@@ -101,12 +101,13 @@ def plot_window():
     # Quit window/app if user uses Return key
     def on_return(event):
         plotWindow.destroy()
+        getCompanyData.fetch_and_plot_data()
 
     # Using Matplotlib display company stock data
     plot_data(plotWindow)
 
     # Add a button to quit when done viewing the plot data
-    bt_1 = customtkinter.CTkButton(plotWindow, text='Quit', width=20, height=12)
+    bt_1 = customtkinter.CTkButton(plotWindow, text='Enter New Ticker', width=20, height=12)
     bt_1.bind('<Return>', on_return)
     bt_1.bind('<Button-1>', on_return)
     bt_1.focus()
