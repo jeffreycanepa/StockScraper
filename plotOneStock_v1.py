@@ -91,7 +91,7 @@ def get_company():
 # Returns:
 #   stockData- object containing stock data for past year for the provided symbol
 #
-def get_data(item):
+def get_stock_data(item):
     global dates
     global company_name
     # Pseudo status
@@ -130,6 +130,32 @@ def get_company_name(ticker):
     result = result.replace("<title>", "")
     return result
 
+# get_data()- Run all the methods needed to execute the script
+# Requires: 
+#
+# Returns:
+#
+def get_data():
+    global numdays
+    global dates
+    global ticker
+    global company_data
+
+    # Get the company ticker
+    ticker = get_company()
+
+    # Get number of days to look up stock data for
+    numdays = get_numdays()
+
+    # Get start/end dates based on numdays
+    dates = get_dates(numdays)
+
+    # Fetch the stock data from yfinance
+    company_data = get_stock_data(ticker)
+
+    # Create window to display data in, plot the data, then display the data
+    plot_window(company_data, ticker)
+    
 # plot_data()- Plot stock data using Matplotlib and add it to Tkinter window
 # Requires:
 #   company-   object containing the stock data
@@ -207,7 +233,8 @@ def plot_window(company_data, ticker):
 
     # Quit window/app if user uses the Return key
     def on_return(event):
-        plotWindow.quit()
+        plotWindow.destroy()
+        get_data()
 
     plotWindow.protocol('WM_DELETE_WINDOW', on_closing)
 
@@ -217,8 +244,8 @@ def plot_window(company_data, ticker):
     # Using Matplotlib display company stock data
     plot_data(company_data, ticker, plotWindow)
 
-    # Add a button to quit when done viewing the plot data
-    bt_1 = Button(plotWindow, text='Quit', command=plotWindow.quit)
+    # Add a button to ask for a new stock symbol
+    bt_1 = Button(plotWindow, text='Enter New Ticker', command=lambda:[plotWindow.destroy(), get_data()])
     bt_1.bind('<Return>', on_return)
     bt_1.focus()
     bt_1.pack()
@@ -228,23 +255,8 @@ def plot_window(company_data, ticker):
 # main()
 #
 def main():
-    global numdays
-    global dates
+    # Get Stock Data and plot it
+    get_data()
 
-    # Get the company ticker
-    ticker = get_company()
-
-    # Get number of days to look up stock data for
-    numdays = get_numdays()
-
-    # Get start/end dates based on numdays
-    dates = get_dates(numdays)
-
-    # Fetch the stock data from yfinance
-    company_data = get_data(ticker)
-
-    # Create window to display data in, plot the data, then display the data
-    plot_window(company_data, ticker)
-    
 if __name__ == "__main__":
     main()
