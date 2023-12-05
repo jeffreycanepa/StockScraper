@@ -53,19 +53,7 @@ stockData = None
 
 
 def main():
-    global numdays
-    global dates
-    # Get the Ticker symbol
-    getTicker.getTicker()
-
-    # Get a start date and an end date for the stock lookup
-    numDays.get_lookup_dates()
-
-    # Grab the data from yfinance
-    getCompanyData.get_data()
-    
-    # Create window to display data in, plot the data, then display the data
-    displayData.plot_window()
+    getCompanyData.fetch_and_plot_data()
 
 if __name__ == "__main__":
     main()

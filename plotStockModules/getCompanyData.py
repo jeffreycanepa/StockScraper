@@ -1,8 +1,9 @@
 import yfinance as yf
 import plotStockModules.numDays_ctk as numDays
 import plotStockModules.getTicker_ctk as getTicker
+import plotStockModules.displayData_ctk as displayData
 
-def get_data():
+def get_stock_data():
     global company_name
     global stockData
     item = getTicker.ticker
@@ -33,3 +34,17 @@ def get_company_name(ticker):
     result = str(name.group(0))
     result = result.replace("<title>", "")
     return result
+
+def fetch_and_plot_data():
+    global numdays
+    global dates
+    # Get the Ticker symbol
+    getTicker.getTicker()
+    # Get number of days to look up
+    numDays.getNumDays()  
+    # Get start/end dates based on numer of days
+    numDays.getDates()
+    # Grab the data from yfinance
+    get_stock_data()
+    # Create window to display data in, plot the data, then display the data
+    displayData.plot_window()
