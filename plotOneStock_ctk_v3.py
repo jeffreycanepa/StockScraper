@@ -8,14 +8,14 @@
 -       date and an end date.  The script then uses matplotlib 
 -       to plot the data within a customtkinter window 
 -
--   Required Packages:
+-   Required Packages (Required by imported Modules):
 -       yfinance: 0.2.31
--       tkinter: 
--       customtkinter: 5.2.1
 -       matplotlib: 3.8.0
 -       seaborn: 0.13.0
 -       pandas: 2.1.1
--       datetime:
+-       customtkinter: 5.2.1
+-       tkinter: built-in
+-       datetime: built-in
 -       tkcalendar: 1.6.1
 -
 -   Required Modules:
@@ -25,10 +25,6 @@
 -       displayData_ctk.py
 -
 -   Methods:
--       get_ticker()
--       get_lookup_dates()
--       get_data()
--       plot_window()
 -       main()
 -
 -   New in Version 3:
@@ -41,19 +37,10 @@
 -   Nov 2023
 --------------------------------------------------------------
 '''
-import plotStockModules.getTicker_ctk as getTicker
-import plotStockModules.numDays_ctk as numDays
-import plotStockModules.getCompanyData as getCompanyData
-import plotStockModules.displayData_ctk as displayData
-
-dates = None
-numdays = None
-company_name = None
-stockData = None
-
+import plotStockModules.getCompanyData_ctk as getCompanyData
 
 def main():
-    getCompanyData.fetch_and_plot_data()
+    getCompanyData.get_data_using_calendar()
 
 if __name__ == "__main__":
     main()

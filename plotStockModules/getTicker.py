@@ -1,7 +1,7 @@
 # /opt/homebrew/bin/python3
 '''
 --------------------------------------------------------------
--   getTicker_ctk.py
+-   getTicker.py
 -       This module has a method that asks the user for a 
 -       stock ticker. It also has a method that calculates 
 -       where on the screen to display the dialog (to my preferences)
@@ -9,7 +9,6 @@
 -
 -   Required Packages (required in imported Modules):
 -       tkinter: built-in
--       customtkinter: 5.2.1
 -
 -   Required Modules:
 -
@@ -22,11 +21,8 @@
 -   Dec 2023
 --------------------------------------------------------------
 '''
-
-# Use customtkinter to ask user for a stock ticker.  Still require tkinter for get() and for messagebox
-import tkinter
+from tkinter import *
 from tkinter import messagebox
-import customtkinter
 
 # Global variable
 ticker = None
@@ -53,19 +49,19 @@ def getTicker():
     def click_return(event):
         validate()
 
-    # Create customtkinter window
-    ticker_window = customtkinter.CTk()
+    # Create kinter window
+    ticker_window = Tk()
     ticker_window.geometry(set_winsize(ticker_window))
     ticker_window.title('Get Stock Ticker')
 
     # Add label to window
-    labelStr = tkinter.StringVar(value= 'Enter Stock Ticker')
-    label = customtkinter.CTkLabel(ticker_window, textvariable= labelStr)
+    labelStr = StringVar(value= 'Enter Stock Ticker')
+    label = Label(ticker_window, textvariable= labelStr)
     label.pack(padx=10, pady=10)
 
     # Add field to get ticker.  Make it accessible with tkinter.StringVar()
-    myTicker = tkinter.StringVar()
-    entryField = customtkinter.CTkEntry(ticker_window, width = 60, textvariable=myTicker)
+    myTicker = StringVar()
+    entryField = Entry(ticker_window, width = 6, textvariable=myTicker)
     entryField.pack()
 
     # Validate the data entered into the field.
@@ -101,10 +97,9 @@ def getTicker():
             ticker_window.destroy()
 
     # Add button to window.  Add commands to validate data input and to quit window when validation is completed        
-    btn = customtkinter.CTkButton(ticker_window, text="Enter", width=20, height=10, command=validate)
+    btn = Button(ticker_window, text="Enter", command=validate)
     btn.bind('<Return>', click_return)
     btn.focus()
     btn.pack(padx=10,pady=20)
 
     ticker_window.mainloop()
-

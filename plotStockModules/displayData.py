@@ -1,15 +1,14 @@
 # /opt/homebrew/bin/python3
 '''
 --------------------------------------------------------------
--   displayData_ctk.py
--       This module creates a window using customtkinter.
+-   displayData.py
+-       This module creates a window using tkinter.
 -       Matplotlib is then used to plot data within the 
--       customtkinter window.  Customtkinter is also used to
--       ask the user for a stock ticker and to select a start
--       and end date for looking up data for the provided stock 
--       ticker. Though this module does not use yfinance, it is used
--       by module getCompanyData_ctk, therefore it is listed as a 
--       requirement.
+-       tkinter window. Tkinter is also used to ask the 
+-       user for a stock ticker and the number of days for
+-       which to looking up data for. Though this module does
+-       not use yfinance, it is used by module getCompanyData
+-       and is therefore listed as a requirement.
 -
 -   Required Packages (required in imported Modules):
 -       yfinance: 0.2.31
@@ -21,8 +20,8 @@
 -       datetime: built-in
 -
 -   Required Modules:
--       numDays_ctk.py
--       getCompanyData_ctk.py
+-       numDays.py
+-       getCompanyData.py
 -
 -   Methods:
 -       plot_data()
@@ -34,14 +33,14 @@
 -   Dec 2023
 --------------------------------------------------------------
 '''
-
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 import seaborn as sns; sns.set()
 import pandas as pd
-import customtkinter
-import plotStockModules.getCompanyData_ctk as getCompanyData
-import plotStockModules.numDays_ctk as numDays
+from tkinter import *
+from tkinter.simpledialog import askinteger, askstring
+import plotStockModules.getCompanyData as getCompanyData
+import plotStockModules.numDays as numDays
 
 # plot_data()- Plot stock data using Matplotlib and add it to Tkinter window
 # Requires:
@@ -57,7 +56,7 @@ def plot_data(window):
     dates = numDays.dates
     fig, ax = plt.subplots(figsize=(8,7))
     sns.set_style('darkgrid')
-    # ax.set_title('Closing Prices', fontsize=20)
+    # ax.set_title('Closing Prices', fontsize=7)
 
     # convert the regression line start date to ordinal
     x1 = pd.to_datetime(dates[0]).toordinal()
@@ -81,7 +80,7 @@ def plot_data(window):
     ax.tick_params(axis='both', labelsize=7)
 
     sns.despine()
-    plt.title('{0} Closing Price: {1} - {2}'.format(company_name, dates[4], dates[5]), size='x-large', color='black')
+    plt.title('{0} Closing Prices: {1} - {2}'.format(company_name, dates[4], dates[5]), size='large', color='black')
     plt.ylabel('Stock Price $ (USD)')
     plt.xlabel('')
     
@@ -123,9 +122,8 @@ def set_winsize(cwindow):
 #
 def plot_window():
     # Create the window
-    plotWindow = customtkinter.CTk()
-    # plotWindow.title('Past ' + str(numDays.days) + ' Days')
-    plotWindow.title(getCompanyData.company_name + ' Closing Price')
+    plotWindow = Tk()
+    plotWindow.title(getCompanyData.company_name +  ' Closing Prices')
     
     # size the window
     plotWindow.geometry(set_winsize(plotWindow))
@@ -133,21 +131,25 @@ def plot_window():
     # Quit window/app if user closes dialog using the window's close widget
     def on_closing():
         plotWindow.destroy()
-    plotWindow.protocol('WM_DELETE_WINDOW', on_closing)
 
-    # Quit window/app if user uses Return key
+    # Quit window/app if user uses the Return key
     def on_return(event):
         plotWindow.destroy()
         getCompanyData.fetch_and_plot_data()
 
+    plotWindow.protocol('WM_DELETE_WINDOW', on_closing)
+
+    # lock the window size
+    plotWindow.resizable(False, False)
+
     # Using Matplotlib display company stock data
     plot_data(plotWindow)
 
-    # Add a button to quit when done viewing the plot data
-    bt_1 = customtkinter.CTkButton(plotWindow, text='Enter New Ticker', width=20, height=12)
+    # Add a button to ask for a new stock symbol
+    bt_1 = Button(plotWindow, text='Enter New Ticker')
     bt_1.bind('<Return>', on_return)
     bt_1.bind('<Button-1>', on_return)
     bt_1.focus()
-    bt_1.pack(pady=10)
+    bt_1.pack()
 
     plotWindow.mainloop() 

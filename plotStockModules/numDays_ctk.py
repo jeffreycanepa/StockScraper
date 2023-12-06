@@ -176,7 +176,7 @@ def set_winsize(cwindow):
     winGeometry = f'{winWidth}x{winHeight}+{int(x)}+{80}'
     return winGeometry
 
-def getNumDays():
+def get_num_days():
     # Function to use with bind event on dialog button
     def click_return(event):
         getValue()
@@ -233,7 +233,7 @@ def getNumDays():
 
     days_window.mainloop()
 
-def getDates():
+def get_dates():
     global days
     global dates
     now = datetime.now()
