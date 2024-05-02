@@ -288,12 +288,12 @@ def plot_data(company, linestyles, window):
     # Format the x and y tickers and labels
     ax.set(ylabel='Stock Price (USD)')
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d \'%y'))
-    ax.yaxis.set_major_formatter('${x:1.0f}')
+    ax.yaxis.set_major_formatter('${x:1.0f}.00')
     ax.tick_params(axis='x', labelrotation=45)
     ax.tick_params(axis='both', labelsize=9)
 
     # Map legend lines to plot lines
-    leg = ax.legend(loc = 'upper center', fancybox=True, framealpha=0.5, ncols=3, title='Click on marker to hide/show plot line')
+    leg = ax.legend(fancybox=True, framealpha=0.5, ncols=3, title='Click on marker to hide/show plot line')
     lined = {}
     for legline, origline in zip(leg.get_lines(), mylines):
         legline.set_picker(True)  # Enable picking on the legend line.
