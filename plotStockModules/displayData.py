@@ -76,8 +76,9 @@ def plot_data(window):
     labels = [pd.Timestamp.fromordinal(int(label)).strftime('%b %d, \'%y') for label in xticks]
     ax1.set_xticks(xticks)
     ax1.set_xticklabels(labels)
-    ax.tick_params(axis='x', labelrotation=45)
-    ax.tick_params(axis='both', labelsize=7)
+    ax.yaxis.set_major_formatter('${x:1.0f}.00')
+    ax.tick_params(axis='x', labelrotation=45, labelsize=7)
+    ax.tick_params(axis='y', labelsize=9)
 
     sns.despine()
     plt.title('{0} Closing Prices: {1} - {2}'.format(company_name, dates[4], dates[5]), size='large', color='black')
