@@ -275,6 +275,7 @@ def plot_data(company, linestyles, window):
     mylines = []
     fig, ax = plt.subplots(figsize=(13,7))
     ax.set_title('Closing Prices', fontsize=20)
+    ax.set_facecolor(color='0.95')  # Light Gray background for plot area
 
     # Get plot lines for all selected stocks
     x = 0
@@ -289,7 +290,7 @@ def plot_data(company, linestyles, window):
     ax.yaxis.set_major_formatter('${x:1.0f}.00')
     ax.tick_params(axis='x', labelrotation=45)
     ax.tick_params(axis='both', labelsize=9)
-    ax.grid(True)
+    ax.grid(True, linestyle='--', linewidth=0.5)
 
     # Map legend lines to plot lines
     leg = ax.legend(fancybox=True, framealpha=0.5, ncols=3, title='Click on marker to hide/show plot line')
