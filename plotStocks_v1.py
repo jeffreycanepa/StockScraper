@@ -48,7 +48,7 @@ from tkinter import simpledialog
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
-import seaborn as sns; sns.set()
+import seaborn as sns;
 import pandas as pd
 from datetime import datetime, timedelta
 import sys
@@ -256,9 +256,11 @@ def get_company_data():
 #
 def get_data(item):
     global dates
-    stockData = yf.download(tickers = item[1],
-                         start= dates[0],
-                         end= dates[1])
+    print('Fetching data for', item[1], '...')
+    stockObject = yf.Ticker(item[1])
+    stockData = stockObject.history(start= dates[0],
+                            end= dates[1],
+                            auto_adjust= False)
     stockData.name = item[0]
     return stockData
 
