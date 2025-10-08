@@ -49,7 +49,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
-import seaborn as sns; sns.set()
+import seaborn as sns;
 from datetime import datetime, timedelta
 from tkinter import *
 from tkinter.simpledialog import askinteger
@@ -259,9 +259,8 @@ def get_data(item):
     global dates
     # Pseudo status
     print('Fetching data for', item[0], '...')
-    stockData = yf.download(tickers = item[1],
-                         start= dates[2],
-                         end= dates[3])
+    stockObject = yf.Ticker(item[1])
+    stockData = stockObject.history(start= dates[2],end= dates[3], auto_adjust = False)
     stockData.name = item[0]
     return stockData
 
@@ -275,7 +274,6 @@ def get_data(item):
 def plot_data(company, linestyles, window):
     mylines = []
     fig, ax = plt.subplots(figsize=(13,7))
-    sns.set_style('darkgrid')
     ax.set_title('Closing Prices', fontsize=20)
 
     # Get plot lines for all selected stocks
@@ -291,6 +289,7 @@ def plot_data(company, linestyles, window):
     ax.yaxis.set_major_formatter('${x:1.0f}.00')
     ax.tick_params(axis='x', labelrotation=45)
     ax.tick_params(axis='both', labelsize=9)
+    ax.grid(True)
 
     # Map legend lines to plot lines
     leg = ax.legend(fancybox=True, framealpha=0.5, ncols=3, title='Click on marker to hide/show plot line')
