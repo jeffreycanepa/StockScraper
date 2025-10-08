@@ -57,7 +57,6 @@ def plot_data(window):
     dates = numDays.dates
     fig, ax = plt.subplots(figsize=(8,7))
     sns.set_style('darkgrid')
-    # ax.set_title('Closing Prices', fontsize=20)
 
     # convert the regression line start date to ordinal
     x1 = pd.to_datetime(dates[0]).toordinal()
@@ -66,10 +65,11 @@ def plot_data(window):
     company.index = company.index.map(pd.Timestamp.toordinal)
     data=company.loc[x1:].reset_index()
 
-     # Add Closing price for stock as a line and as a linear regression (trend line)
+    # Add Closing price for stock as a line and as a linear regression (trend line)
     ax1 = sns.lineplot(data=company,x=company.index,y='Adj Close', color='blue', label=company_name)
     sns.regplot(data=company, x=company.index, y='Adj Close', color='black', scatter=False, ci=False)
    
+    # set x axis limits to start/end dates
     ax1.set_xlim(company.index[0], company.index[-1])
 
     # convert the axis back to datetime
@@ -77,7 +77,11 @@ def plot_data(window):
     labels = [pd.Timestamp.fromordinal(int(label)).strftime('%b %d, \'%y') for label in xticks]
     ax1.set_xticks(xticks)
     ax1.set_xticklabels(labels)
+
+    # format the y axis as dollars
     ax.yaxis.set_major_formatter('${x:1.0f}.00')
+
+    # format the tick labels
     ax.tick_params(axis='x', labelrotation=45, labelsize=7)
     ax.tick_params(axis='y', labelsize=9)
 
