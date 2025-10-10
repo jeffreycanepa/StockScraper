@@ -12,14 +12,18 @@
 -       tkinter
 -       matplotlib
 -       pandas
+-       numpy
 -       datetime
+-       sys
 -
 -   Methods:
+-       get_numdays()
 -       get_dates()
 -       read_stock_file()
 -       get_select_company_winsize()
 -       get_selected_companies()
 -       set_selected_companies()
+-       get_company_data()
 -       get_data()
 -       plot_data()
 -       plot_window()
@@ -40,13 +44,13 @@
 --------------------------------------------------------------
 '''
 # Import Stuff
-from matplotlib.ticker import MaxNLocator
 import yfinance as yf
 import csv
 from tkinter import *
 from tkinter import simpledialog
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+from matplotlib.ticker import MaxNLocator
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 import pandas as pd
 import numpy as np
