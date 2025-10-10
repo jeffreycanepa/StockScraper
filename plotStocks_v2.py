@@ -1,10 +1,16 @@
 # /opt/homebrew/bin/python3
 '''
 --------------------------------------------------------------
--   plotStocks.py
--       This script looks up the provided stocks then uses
--       matplotlib to plot the closing price for the past 
--       365 days and displays the plot in a tkinter window
+-   plotStocks_v2.py
+-       This script asks for user to select stocks from a list
+-       provided by .csv file.  It then looks up stock data
+-       using yfinance for the selected stocks. 
+-       Matplotlib is then used to plot the closing price for the
+-       past x number of days and displays the plot in a tkinter
+-       window.
+-
+-       The user can click on the legend items to hide/show the
+-       corresponding stock data.
 -
 -   Requires:
 -       yfinance
@@ -30,13 +36,13 @@
 -       main()
 -
 -   Data for stock ticker, company name, line color and line style
--       are read in from .csv file 'stocktickers.csv'.  The file should
--       consist of a row of data for every stock you wish to lookup.
--       Required columns are: 
--           A: Stock ticker 
--           B: Company Name
--           C: seaborn line color
--           D: seaborn line style
+-   are read in from .csv file 'stocktickers.csv'.  The file should
+-   consist of a row of data for every stock you wish to lookup.
+-   Required columns are: 
+-       A: Stock ticker 
+-       B: Company Name
+-       C: seaborn line color
+-       D: seaborn line style
 -
 -   Jeff Canepa
 -   jeff.canepa@gmail.com
