@@ -11,7 +11,6 @@
 -       csv
 -       tkinter
 -       matplotlib
--       seaborn
 -       pandas
 -       datetime
 -
@@ -32,8 +31,8 @@
 -       Required columns are: 
 -           A: Stock ticker 
 -           B: Company Name
--           C: seaborn line color
--           D: seaborn line style
+-           C: line color
+-           D: line style
 -
 -   Jeff Canepa
 -   jeff.canepa@gmail.com
@@ -41,16 +40,16 @@
 --------------------------------------------------------------
 '''
 # Import Stuff
+from matplotlib.ticker import MaxNLocator
 import yfinance as yf
 import csv
 from tkinter import *
 from tkinter import simpledialog
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
-import seaborn as sns;
 import pandas as pd
+import numpy as np
 from datetime import datetime, timedelta
 import sys
 
@@ -61,6 +60,7 @@ company_names = []
 company_data = []
 cbuts = []
 selected_companies = []
+
 # List of lists with seaborn line colors and line styles
 linestyle = []
 btvars = []
@@ -259,8 +259,7 @@ def get_data(item):
     print('Fetching data for', item[1], '...')
     stockObject = yf.Ticker(item[1])
     stockData = stockObject.history(start= dates[0],
-                                    end= dates[1],
-                                    auto_adjust= False)
+                                    end= dates[1])
     stockData.name = item[0]
     return stockData
 
@@ -274,37 +273,38 @@ def get_data(item):
 def plot_data(company, linestyle, window):
     # Create plot using matplotlib
     fig, ax = plt.subplots(figsize=(13, 7))
-    
-    # convert the regression line start date to ordinal
-    x1 = pd.to_datetime(dates[0]).toordinal()
 
+    # For each company in the list, plot the closing price and trendline if selected
     for cmp, lstyle in zip(company,linestyle):
+        # Set dates to the index of the company data
+        mydates = cmp.index
+        
         # convert the datetime index to ordinal values, which can be used to plot a regression line
-        cmp.index = cmp.index.map(pd.Timestamp.toordinal)
-        data=cmp.loc[x1:].reset_index()
+        cmp.index.map(pd.Timestamp.toordinal)
 
         # Add Closing price for stock as a line and as a linear regression (trend line)
-        ax1 = sns.lineplot(data=cmp,x=cmp.index,y="Close",color=lstyle[0],linestyle=lstyle[1], label=cmp.name)
-        
+        ax.plot(cmp.index, cmp['Close'], color=lstyle[0],linestyle=lstyle[1], label=cmp.name)
+
+        # Set dates values to numeric value for use in regression line
+        mydates = mdates.date2num(mydates)
+
         # If user checked to show trendline, then add trendline to the plot
         if trendline == 1:
-            sns.regplot(data=data, x=cmp.index, y='Close', color=lstyle[0], scatter=False, ci=False, line_kws={"linewidth":1})
+            coefficients_close = np.polyfit(mydates, cmp['Close'], 1)
+            p_close = np.poly1d(coefficients_close)
+            ax.plot(mydates, p_close(mydates), color=lstyle[0], linestyle='dotted')
 
-        ax1.set_xlim(cmp.index[0], cmp.index[-1])
-
-        # convert the axis back to datetime
-        xticks = ax1.get_xticks()
-        labels = [pd.Timestamp.fromordinal(int(label)).strftime('%b %d, \'%y') for label in xticks]
-        ax1.set_xticks(xticks)
-        ax1.set_xticklabels(labels, fontsize=7)
-
-    sns.despine()
+    # Configure title, tick parameters, plot labels, ect.
     ax.set_title('Closing Prices\n{0} - {1}'.format(dates[2], dates[3]), size='x-large', color='black')
     ax.set_facecolor(color='0.95')  # Light Gray background for plot area
     ax.set(ylabel='Stock Price ($ USD)', xlabel='Date')
-    ax.yaxis.set_major_formatter('${x:1.0f}.00')
+    ax.yaxis.set_major_formatter('${x:1.0f}.00') # Format y-axis labels as $XX.00
+    ax.yaxis.set_major_locator(MaxNLocator(nbins=15))
+    ax.xaxis.set_major_locator(MaxNLocator(nbins=20))
     ax.tick_params(axis='x', rotation=45)
+    ax.tick_params(axis='both', labelsize=7)
     ax.grid(True, linestyle='--', linewidth=0.5)
+    ax.legend()
 
     # Create canvas and add it to Tkinter window
     canvas = FigureCanvasTkAgg(fig, master=window)
