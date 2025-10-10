@@ -286,7 +286,7 @@ def get_data(item):
 def plot_data(company, linestyles, window):
     mylines = []
     fig, ax = plt.subplots(figsize=(13,7))
-    ax.set_title('Closing Prices\n{0} - {1}'.format(dates[2], dates[3]), size='x-large', color='black')
+    ax.set_title('Closing Prices\n{0} - {1}'.format(dates[4], dates[5]), size='x-large', color='black')
     ax.set_facecolor(color='0.95')  # Light Gray background for plot area
 
     # Get plot lines for all selected stocks
