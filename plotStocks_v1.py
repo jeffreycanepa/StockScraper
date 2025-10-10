@@ -298,6 +298,7 @@ def plot_data(company, linestyle, window):
     ax.set_title('Closing Prices\n{0} - {1}'.format(dates[2], dates[3]), size='x-large', color='black')
     ax.set_facecolor(color='0.95')  # Light Gray background for plot area
     ax.set(ylabel='Stock Price ($ USD)', xlabel='Date')
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d \'%y'))
     ax.yaxis.set_major_formatter('${x:1.0f}.00') # Format y-axis labels as $XX.00
     ax.yaxis.set_major_locator(MaxNLocator(nbins=15))
     ax.xaxis.set_major_locator(MaxNLocator(nbins=20))
