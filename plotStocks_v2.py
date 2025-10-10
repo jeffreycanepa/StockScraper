@@ -10,7 +10,8 @@
 -       yfinance
 -       csv
 -       matplotlib
--       seaborn
+-       pandas
+-       numpy
 -       datetime
 -       tkinter
 -       sys
@@ -43,17 +44,20 @@
 --------------------------------------------------------------
 '''
 
+from matplotlib.ticker import MaxNLocator
 import yfinance as yf
 import csv
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
-import seaborn as sns;
+import pandas as pd
+import numpy as np
 from datetime import datetime, timedelta
 from tkinter import *
 from tkinter.simpledialog import askinteger
 import sys
+from textwrap import fill
 
 #Global variables
 dates = []
@@ -62,6 +66,7 @@ company_names = []
 company_data = []
 cbuts = []
 selected_companies = []
+
 # List of lists with seaborn line colors and line styles
 linestyles = []
 btvars = []
@@ -260,7 +265,8 @@ def get_data(item):
     # Pseudo status
     print('Fetching data for', item[0], '...')
     stockObject = yf.Ticker(item[1])
-    stockData = stockObject.history(start= dates[2],end= dates[3], auto_adjust = False)
+    stockData = stockObject.history(start= dates[2],
+                                    end= dates[3])
     stockData.name = item[0]
     return stockData
 
@@ -274,26 +280,46 @@ def get_data(item):
 def plot_data(company, linestyles, window):
     mylines = []
     fig, ax = plt.subplots(figsize=(13,7))
-    ax.set_title('Closing Prices', fontsize=20)
+    ax.set_title('Closing Prices\n{0} - {1}'.format(dates[2], dates[3]), size='x-large', color='black')
     ax.set_facecolor(color='0.95')  # Light Gray background for plot area
 
     # Get plot lines for all selected stocks
     x = 0
     while x <= len(company)-1:
-        line, = ax.plot(company[x].index.values, company[x]['Adj Close'], label=selected_companies[x][0], color=linestyles[x][0], linestyle=linestyles[x][1])
+        mydates = company[x].index
+        company[x].index.map(pd.Timestamp.toordinal)
+        line, = ax.plot(company[x].index, company[x]['Close'], label=selected_companies[x][0], color=linestyles[x][0], linestyle=linestyles[x][1])
+        
+        mydates = mdates.date2num(mydates)
+
+        # Add trendline
+        coefficients = np.polyfit(mydates, company[x]['Close'], 1)
+        p_close = np.poly1d(coefficients)
+        line2, = ax.plot(mydates, p_close(mydates), linestyle='--', label=selected_companies[x][1], color=linestyles[x][0])
+
         mylines.append(line,)
+        mylines.append(line2,)
         x += 1
 
     # Format the x and y tickers and labels
     ax.set(ylabel='Stock Price (USD)')
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d \'%y'))
     ax.yaxis.set_major_formatter('${x:1.0f}.00')
+    ax.yaxis.set_major_locator(MaxNLocator(nbins=15))
+    ax.xaxis.set_major_locator(MaxNLocator(nbins=20))
     ax.tick_params(axis='x', labelrotation=45)
     ax.tick_params(axis='both', labelsize=9)
     ax.grid(True, linestyle='--', linewidth=0.5)
 
-    # Map legend lines to plot lines
-    leg = ax.legend(fancybox=True, framealpha=0.5, ncols=3, title='Click on marker to hide/show plot line')
+    # Shrink current axis by 10% so legend fits in window
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.9, box.height])  
+
+    # Place legend and set the title with wrapped text
+    leg = ax.legend(fancybox=True, framealpha=0.5, ncols=1, bbox_to_anchor=(1.01, 1.01), fontsize=9, title_fontsize=10, handlelength=1.5)
+    leg.set_title(fill('Click on item to hide/show line', width=20))
+    
+    # Map legend lines to original lines, enable picking on the legend line
     lined = {}
     for legline, origline in zip(leg.get_lines(), mylines):
         legline.set_picker(True)  # Enable picking on the legend line.
