@@ -4,10 +4,9 @@
 -   getTicker_ctk.py
 -       This module has a method that asks the user for a 
 -       stock ticker. It also has a method that calculates 
--       where on the screen to display the dialog (to my preferences)
--       
+-       where on the screen to display the dialog (to my preferences)  
 -
--   Required Packages (required in imported Modules):
+-   Required Packages:
 -       tkinter: built-in
 -       customtkinter: 5.2.1
 -
