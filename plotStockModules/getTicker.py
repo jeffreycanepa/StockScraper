@@ -7,7 +7,7 @@
 -       where on the screen to display the dialog (to my preferences)
 -       
 -
--   Required Packages (required in imported Modules):
+-   Required Packages:
 -       tkinter: built-in
 -
 -   Required Modules:
@@ -28,7 +28,7 @@ from tkinter import messagebox
 ticker = None
 numdays = None
 
-# get_winsize()- Set the location/size of the window 
+# set_winsize()- Set the location/size of the window 
 #
 # Requires:
 #   cwindow- The window object
