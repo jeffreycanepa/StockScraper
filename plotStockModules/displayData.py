@@ -14,7 +14,6 @@
 -       matplotlib: 3.8.0
 -       pandas: 2.1.1
 -       numpy: 1.26.4
--       customtkinter: 5.2.1
 -       tkinter: built-in
 -       datetime: built-in
 -
