@@ -10,12 +10,10 @@
 -       not use yfinance, it is used by module getCompanyData
 -       and is therefore listed as a requirement.
 -
--   Required Packages (required in imported Modules):
--       yfinance: 0.2.31
+-   Required Packages:
 -       matplotlib: 3.8.0
--       seaborn: 0.13.0
 -       pandas: 2.1.1
--       customtkinter: 5.2.1
+-       numpy: 1.26.4
 -       tkinter: built-in
 -       datetime: built-in
 -
@@ -37,10 +35,13 @@
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
-import seaborn as sns; sns.set()
+import matplotlib.dates as mdates
+from matplotlib.ticker import MaxNLocator
 import pandas as pd
+import numpy as np
 from tkinter import *
 from tkinter.simpledialog import askinteger, askstring
+import plotStockModules.numDays as numDays
 import plotStockModules.getCompanyData as getCompanyData
 import plotStockModules.numDays as numDays
 import plotStockModules.isMacbookPro as isMacbookPro
@@ -63,37 +64,35 @@ def plot_data(window):
     dates = numDays.dates
     fig, ax = plt.subplots(figsize=(8,7))
 
-    # convert the regression line start date to ordinal
-    x1 = pd.to_datetime(dates[0]).toordinal()
+    # Set mydates to the index of the company data
+    mydates = company.index
 
     # convert the datetime index to ordinal values, which can be used to plot a regression line
     company.index = company.index.map(pd.Timestamp.toordinal)
-    data=company.loc[x1:].reset_index()
 
-    # Add Closing price for stock as a line and as a linear regression (trend line)
-    ax1 = sns.lineplot(data=company,x=company.index,y='Adj Close', color='blue', label=company_name)
-    sns.regplot(data=company, x=company.index, y='Adj Close', color='black', scatter=False, ci=False)
-   
-    ax1.set_xlim(company.index[0], company.index[-1])
+    # Add Closing price for stock as a line
+    ax.plot(mydates, company['Close'], color='blue', label=company_name)
 
-    # convert the axis back to datetime
-    xticks = ax1.get_xticks()
-    labels = [pd.Timestamp.fromordinal(int(label)).strftime('%b %d, \'%y') for label in xticks]
-    ax1.set_xticks(xticks)
-    ax1.set_xticklabels(labels)
-    
-    # format the y-axis as dollars
-    ax.yaxis.set_major_formatter('${x:1.0f}.00')
+    # Set dates values to numeric values for use in regression line
+    mydates = mdates.date2num(mydates)
 
-    # format the tick labels
-    ax.tick_params(axis='x', labelrotation=45, labelsize=7)
-    ax.tick_params(axis='y', labelsize=9)
+    # Display regression line
+    coefficients_close = np.polyfit(mydates, company['Close'], 1)
+    p_close = np.poly1d(coefficients_close)
+    ax.plot(mydates, p_close(mydates), color='black', linestyle='dotted', label='Trend Line')
 
-    # Add titles, labels and grid
-    plt.title('{0} Closing Prices: {1} - {2}'.format(company_name, dates[4], dates[5]), size='large', color='black')
-    plt.ylabel('Stock Price $ (USD)')
-    plt.xlabel('')
-    plt.grid(True)
+    # Configure title, tick parameters, plot labels, ect.
+    ax.set_title('Closing Prices: {0} - {1}'.format(dates[4], dates[5]), size='large', color='black')
+    ax.set_facecolor(color='0.95')  # Light Gray background for plot area
+    ax.set(ylabel='Stock Price ($ USD)')
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d \'%y'))
+    ax.yaxis.set_major_formatter('${x:1.0f}.00') # Format y-axis labels as $XX.00
+    ax.yaxis.set_major_locator(MaxNLocator(nbins=15))
+    ax.xaxis.set_major_locator(MaxNLocator(nbins=20))
+    ax.tick_params(axis='x', rotation=45)
+    ax.tick_params(axis='both', labelsize=7)
+    ax.grid(True, linestyle='--', linewidth=0.5)
+    ax.legend()
     
     # Create canvas and add it to Tkinter window
     canvas = FigureCanvasTkAgg(fig, master=window)
@@ -134,7 +133,7 @@ def set_winsize(cwindow):
 def plot_window():
     # Create the window
     plotWindow = Tk()
-    plotWindow.title(getCompanyData.company_name +  ' Closing Prices')
+    plotWindow.title(getCompanyData.company_name)
     
     # size the window
     plotWindow.geometry(set_winsize(plotWindow))

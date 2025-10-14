@@ -3,13 +3,13 @@
 --------------------------------------------------------------
 -   numDays.py
 -       This module has a method that asks the user to provide
--       the number of days the use wishes to look up stock date for. 
+-       the number of days the user wishes to look up stock data for. 
 -       It then uses that number of days to calculate a start/end date.
 -       Dates are calculated to the correct format to work with yfinance
 -       and matplotlib.  Dates are saved to an array
 -       
 -
--   Required Packages (required in imported Modules):
+-   Required Packages:
 -       tkinter: built-in
 -       datetime: built-in
 -

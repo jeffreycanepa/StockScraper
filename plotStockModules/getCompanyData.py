@@ -2,16 +2,13 @@
 '''
 --------------------------------------------------------------
 -   getCompanyData.py
--       This module gets stock data using yfinance.  It also
--       gets the company name for the stock ticker provided
--       It then calls all the methods needed to get the stock
--       ticker, get the start/end dates and display the data.
--       
+-       This module gets stock data using yfinance.  It then
+-       gets the company name for the stock ticker provided,
+-       and parses the Close price data for the provided date
+-       range. Lastly it makes a call to display the data.
 -
--   Required Packages (required in imported Modules):
+-   Required Packages:
 -       yfinance: 0.2.31
--       requests: 2.31.0
--       re: built-in
 -
 -   Required Modules:
 -       numDays.py
@@ -20,7 +17,6 @@
 -
 -   Methods:
 -       get_stock_data()
--       get_company_name()
 -       fetch_and_plot_data()
 -
 -   Jeff Canepa
@@ -50,9 +46,7 @@ def get_stock_data():
     
     # Get stock data using yfinance
     stockObject = yf.Ticker(item)
-    stockData = stockObject.history(start= numDays.dates[2],
-                                   end= numDays.dates[3],
-                                   auto_adjust=False)
+    stockData = stockObject.history(start= numDays.dates[2],end= numDays.dates[3])
     company_name = stockObject.info['longName']
     return stockData
 
