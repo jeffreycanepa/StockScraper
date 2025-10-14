@@ -7,3 +7,4 @@ mystocks.csv
 __pycache__
 tryplot.py
 playwithticks.py
+.vscode/settings.json
