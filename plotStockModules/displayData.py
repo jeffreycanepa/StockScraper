@@ -22,6 +22,7 @@
 -   Required Modules:
 -       numDays.py
 -       getCompanyData.py
+-       isMacbookPro.py
 -
 -   Methods:
 -       plot_data()
@@ -33,6 +34,7 @@
 -   Dec 2023
 --------------------------------------------------------------
 '''
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 import seaborn as sns; sns.set()
@@ -41,6 +43,7 @@ from tkinter import *
 from tkinter.simpledialog import askinteger, askstring
 import plotStockModules.getCompanyData as getCompanyData
 import plotStockModules.numDays as numDays
+import plotStockModules.isMacbookPro as isMacbookPro
 
 # plot_data()- Plot stock data using Matplotlib and add it to Tkinter window
 # Requires:
@@ -51,6 +54,10 @@ import plotStockModules.numDays as numDays
 # Returns:
 #
 def plot_data(window):
+    # Adjust the DPI for MacBook Pro displays
+    if isMacbookPro.is_macbook_pro():
+        mpl.rcParams['figure.dpi'] = 50 # Adjust this value (e.g., 150, 300) for desired size/sharpness
+
     company_name = getCompanyData.company_name
     company = getCompanyData.stockData
     dates = numDays.dates

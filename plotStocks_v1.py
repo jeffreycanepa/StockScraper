@@ -16,6 +16,9 @@
 -       datetime
 -       sys
 -
+-   Required Modules:
+-       isMacbookPro.py
+-
 -   Methods:
 -       get_numdays()
 -       get_dates()
@@ -48,6 +51,7 @@ import yfinance as yf
 import csv
 from tkinter import *
 from tkinter import simpledialog
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from matplotlib.ticker import MaxNLocator
@@ -56,6 +60,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 import sys
+import plotStockModules.isMacbookPro as isMacbookPro
 
 #Global variables
 dates = []
@@ -275,6 +280,10 @@ def get_data(item):
 # Returns:
 #
 def plot_data(company, linestyle, window):
+    # Adjust the DPI for MacBook Pro displays
+    if isMacbookPro.is_macbook_pro():
+        mpl.rcParams['figure.dpi'] = 50 # Adjust this value (e.g., 150, 300) for desired size/sharpness
+
     # Create plot using matplotlib
     fig, ax = plt.subplots(figsize=(13, 7))
 
@@ -301,7 +310,7 @@ def plot_data(company, linestyle, window):
     # Configure title, tick parameters, plot labels, ect.
     ax.set_title('Closing Prices\n{0} - {1}'.format(dates[2], dates[3]), size='x-large', color='black')
     ax.set_facecolor(color='0.95')  # Light Gray background for plot area
-    ax.set(ylabel='Stock Price ($ USD)', xlabel='Date')
+    ax.set(ylabel='Stock Price ($ USD)')
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d \'%y'))
     ax.yaxis.set_major_formatter('${x:1.0f}.00') # Format y-axis labels as $XX.00
     ax.yaxis.set_major_locator(MaxNLocator(nbins=15))
