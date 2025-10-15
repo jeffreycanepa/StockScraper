@@ -1,10 +1,6 @@
 stockprices.csv
-myStocks.xlsx
-old/stocktickers.csv
 stocktickers.csv
 mystocks.csv
 
 __pycache__
-tryplot.py
-playwithticks.py
 .vscode/settings.json
