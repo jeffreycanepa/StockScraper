@@ -50,20 +50,21 @@
 --------------------------------------------------------------
 '''
 
-from matplotlib.ticker import MaxNLocator
 import yfinance as yf
 import csv
+from tkinter import *
+from tkinter.simpledialog import askinteger
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-from matplotlib.figure import Figure
+from matplotlib.ticker import MaxNLocator
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-from tkinter import *
-from tkinter.simpledialog import askinteger
 import sys
 from textwrap import fill
+import plotStockModules.isMacbookPro as isMacbookPro
 
 #Global variables
 dates = []
@@ -284,6 +285,10 @@ def get_data(item):
 # Returns:
 #
 def plot_data(company, linestyles, window):
+    # Adjust the DPI for Macbook Pro retina displays
+    if isMacbookPro.is_macbook_pro():
+        mpl.rcParams['figure.dpi'] = 50 # Adjust this value (eg., 150, 300) for desired size/resolution
+
     mylines = []
     fig, ax = plt.subplots(figsize=(13,7))
     ax.set_title('Closing Prices\n{0} - {1}'.format(dates[4], dates[5]), size='x-large', color='black')
