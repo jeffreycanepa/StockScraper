@@ -145,7 +145,7 @@ def plot_window():
     # Quit window/app if user uses Return key
     def on_return(event):
         plotWindow.destroy()
-        getCompanyData.fetch_and_plot_data()
+        getCompanyData.get_data_using_calendar()
 
     # Using Matplotlib display company stock data
     plot_data(plotWindow)
