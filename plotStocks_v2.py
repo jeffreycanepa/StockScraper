@@ -147,7 +147,7 @@ def read_stock_file():
 #
 def get_select_company_winsize(cwindow):
     winWidth = 200
-    winHeight = 120 + (len(company_names) * 23)
+    winHeight = 150 + (len(company_names) * 23)
     x = (cwindow.winfo_screenwidth() / 2) - (winWidth / 2)
     y = (cwindow.winfo_screenheight() / 2) - ((winHeight / 2) + 60)
     winGeometry = f'{winWidth}x{winHeight}+{int(x)}+{int(y)}'
@@ -206,7 +206,7 @@ def get_selected_companies():
     frame.pack(padx=10, pady=10) #pady=20, padx=10
 
      # Create a frame for checkboxes
-    frame2 = Frame(cwindow, padx=8) #, pady=5
+    frame2 = Frame(cwindow, padx=5, pady=5)
     frame2.pack(padx=10)
 
      # Create Enter button
@@ -219,7 +219,8 @@ def get_selected_companies():
     for index, item in enumerate(company_names):
         cbuts.append(Checkbutton(frame, text=item, anchor='w', width=50, variable=btvars[index], onvalue=1, offvalue=0, command=is_checkbox_checked))
         cbuts[index].pack()
-    Checkbutton(frame2, text='Select All', anchor='w', width=50, variable=cb, onvalue=1, offvalue=0, command=lambda:[select_deselect_all(),is_checkbox_checked()]).pack()
+    Checkbutton(frame2, text='Select All', anchor='w', width=15, variable=cb, onvalue=1, offvalue=0, command=lambda:[select_deselect_all(),is_checkbox_checked()]).pack()
+    Checkbutton(frame2, text='Display Trendline', anchor='w', width=15, variable=tline, onvalue=1, offvalue=0, command=showline).pack()
 
     # Bind Return key to Button
     bt1.bind('<Return>', on_return)
@@ -297,19 +298,26 @@ def plot_data(company, linestyles, window):
     # Get plot lines for all selected stocks
     x = 0
     while x <= len(company)-1:
+        # Get dates for the x axis
         mydates = company[x].index
+        # Convert dates to ordinal for use in trendline calculation
         company[x].index.map(pd.Timestamp.toordinal)
+        # Plot the stock closing price line and add it to the mylines list for legend use
         line, = ax.plot(company[x].index, company[x]['Close'], label=selected_companies[x][0], color=linestyles[x][0], linestyle=linestyles[x][1])
-        
-        mydates = mdates.date2num(mydates)
-
-        # Add trendline
-        coefficients = np.polyfit(mydates, company[x]['Close'], 1)
-        p_close = np.poly1d(coefficients)
-        line2, = ax.plot(mydates, p_close(mydates), linestyle='--', label=selected_companies[x][1], color=linestyles[x][0])
-
         mylines.append(line,)
-        mylines.append(line2,)
+
+        # If user selected show trendline, add a trendline
+        if trendline == 1:
+            # Set dates values to numeric value for use in regression line
+            mydates = mdates.date2num(mydates)
+            # Use numpy polyfit to get the slope and intercept for the trendline
+            coefficients = np.polyfit(mydates, company[x]['Close'], 1)
+            # Create a polynomial object from the coefficients
+            p_close = np.poly1d(coefficients)
+            # Plot the trendline and add it to the mylines list for legend use
+            line2, = ax.plot(mydates, p_close(mydates), linestyle='--', label=f'{selected_companies[x][1]} Trend', color=linestyles[x][0])
+            mylines.append(line2,)
+
         x += 1
 
     # Format the x and y tickers and labels
