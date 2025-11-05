@@ -25,12 +25,14 @@
           "content": "Add widget to allow/disallow trend line to plotStocks_v2 (already in v1)",
           "id": 1694644391748,
           "level": "warning",
-          "done": false,
+          "done": true,
           "start": 1694644391748,
           "fileLink": "plotStocks_v2.py",
           "tags": [
             "1694645393318"
-          ]
+          ],
+          "focus": false,
+          "end": 1762364984725
         }
       },
       {
@@ -84,11 +86,13 @@
           "content": "Work on how many ticks are plotted for a given number of days/Months/Years.",
           "id": 1694656034401,
           "level": "success",
-          "done": false,
+          "done": true,
           "start": 1694656034401,
           "tags": [
             "1694645419028"
-          ]
+          ],
+          "focus": false,
+          "end": 1762364998997
         }
       }
     ],
@@ -98,6 +102,7 @@
     "schema": "https://github.com/Saber2pr/vsc-ext-todolist/blob/master/src/api/type.ts#L3",
     "add_mode": "bottom",
     "virtual": false,
+    "timelines": [],
     "showLine": false,
     "playFontSize": 24,
     "tags": {
@@ -131,6 +136,6 @@
     "showEndTime": false,
     "simpleMode": false,
     "lang": "en",
-    "version": "1694656084869"
+    "version": "1762364999035"
   }
 }
