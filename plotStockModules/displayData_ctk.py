@@ -128,7 +128,8 @@ def set_winsize(cwindow):
 #
 # Returns:
 #
-def plot_window():
+def plot_window(useCalendar):
+    useCalendar = useCalendar
     # Create the window
     plotWindow = customtkinter.CTk()
     # plotWindow.title('Past ' + str(numDays.days) + ' Days')
@@ -142,10 +143,13 @@ def plot_window():
         plotWindow.destroy()
     plotWindow.protocol('WM_DELETE_WINDOW', on_closing)
 
-    # Quit window/app if user uses Return key
+    # Quit window and get new ticker when user clicks button
     def on_return(event):
         plotWindow.destroy()
-        getCompanyData.get_data_using_calendar()
+        if useCalendar == True:
+            getCompanyData.get_data_using_calendar()
+        else:
+            getCompanyData.fetch_and_plot_data()
 
     # Using Matplotlib display company stock data
     plot_data(plotWindow)

@@ -59,7 +59,7 @@ def fetch_and_plot_data():
     get_stock_data()
     
     # Create window to display data in, plot the data, then display the data
-    displayData.plot_window()
+    displayData.plot_window(useCalendar=False)
 
 def get_data_using_calendar():
     global numdays
@@ -74,4 +74,4 @@ def get_data_using_calendar():
     get_stock_data()
     
     # Create window to display data in, plot the data, then display the data
-    displayData.plot_window()
+    displayData.plot_window(useCalendar=True)
