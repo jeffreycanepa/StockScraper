@@ -1,6 +1,7 @@
 stockprices.csv
 stocktickers.csv
 mystocks.csv
+myStocks.xlsx
 
 __pycache__
 .vscode/settings.json
