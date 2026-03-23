@@ -1,4 +1,4 @@
-# /opt/homebrew/bin/python3
+# /Library/Frameworks/Python.framework/Versions/3.12/bin/python3
 '''
 getStocks.py: This is my first attempt at a useful Python script.  This
 script uses yFinance to lookup some of the stocks that I own and will
